@@ -1,0 +1,131 @@
+/* Home Header Styles */
+.home-header {
+  padding: 1rem 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 10;
+}
+
+.home-header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.home-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.home-logo img {
+  height: 40px;
+}
+
+.home-logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.025em;
+}
+
+.home-nav {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.home-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.home-nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.home-nav-link:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.home-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+.home-nav-link:hover::after {
+  width: 100%;
+}
+
+.home-login-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: transparent;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.home-login-btn:hover {
+  background-color: white;
+  color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home-header-container {
+    padding: 0 1rem;
+  }
+  
+  .home-nav {
+    gap: 1.5rem;
+  }
+  
+  .home-nav-links {
+    gap: 1rem;
+  }
+  
+  .home-nav-link {
+    font-size: 0.9rem;
+  }
+  
+  .home-login-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-nav-links {
+    display: none;
+  }
+  
+  .home-logo-text {
+    font-size: 1.25rem;
+  }
+}
