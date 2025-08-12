@@ -83,7 +83,7 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
               Avaliações
             </button>
           </nav>
-        ) : (
+        ) : secaoAtiva ? (
           <nav className={`nav ${menuAberto ? 'mobile-open' : ''}`}>
             {itensMenu.map(item => (
               <button
@@ -95,38 +95,13 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
               </button>
             ))}
           </nav>
-        )}
+        ) : null}
 
         {!isLoggedIn ? (
           <div className="auth-container">
             <button onClick={aoClicarLogin} className="login-btn">
               Entrar
             </button>
-            <div className="user-profile-container">
-              <button 
-                className="dev-mode-btn"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setShowProfileMenu(!showProfileMenu)
-                }}
-              >
-                🚀
-              </button>
-              {showProfileMenu && (
-                <div className="profile-menu">
-                  <button 
-                    onClick={() => {
-                      login({ nome: 'Dev User', email: 'dev@test.com' }, 'cliente')
-                      navigate('/dashboard')
-                      setShowProfileMenu(false)
-                    }}
-                    className="menu-item dev-mode"
-                  >
-                    🚀 Modo Dev
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
         ) : (
           <div className="user-profile-container">

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import Header from '../componentes/Header'
+import HeaderProfissional from '../componentes/HeaderProfissional'
 import PageTransition from '../componentes/PageTransition'
 
 const mockConversas = [
@@ -42,6 +44,7 @@ const mockMensagens = [
 
 function Chat() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [secaoAtiva, setSecaoAtiva] = useState('chat')
   const [conversaSelecionada, setConversaSelecionada] = useState(mockConversas[0])
   const [mensagens, setMensagens] = useState(mockMensagens)
@@ -49,7 +52,13 @@ function Chat() {
 
   const handleSetSecaoAtiva = (secao) => {
     setSecaoAtiva(secao)
-    if (secao !== 'chat') {
+    if (secao === 'chat') {
+      // Manter na página de chat
+      return
+    }
+    if (user?.type === 'profissional') {
+      navigate('/dashboard-profissional')
+    } else {
       navigate('/dashboard')
     }
   }
@@ -69,7 +78,11 @@ function Chat() {
 
   return (
     <PageTransition>
-      <Header secaoAtiva={secaoAtiva} setSecaoAtiva={handleSetSecaoAtiva} aoClicarLogin={() => navigate('/')} />
+      {user?.type === 'profissional' ? (
+        <HeaderProfissional secaoAtiva="" setSecaoAtiva={handleSetSecaoAtiva} aoClicarLogin={() => navigate('/')} />
+      ) : (
+        <Header secaoAtiva="" setSecaoAtiva={handleSetSecaoAtiva} aoClicarLogin={() => navigate('/')} />
+      )}
       
       <main style={{
         minHeight: 'calc(100vh - 70px)',

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import Header from '../componentes/Header'
+import HeaderProfissional from '../componentes/HeaderProfissional'
 import PageTransition from '../componentes/PageTransition'
 import '../estilos/DashboardProfissional.css'
 
@@ -53,14 +53,14 @@ const mockStats = [
 function DashboardProfissional() {
   const navigate = useNavigate()
   const { user, switchUserType } = useAuth()
-  const [secaoAtiva, setSecaoAtiva] = useState('dashboard-pro')
+  const [secaoAtiva, setSecaoAtiva] = useState('inicio')
   const [dadosProfissional, setDadosProfissional] = useState(null)
   const [notificacoes, setNotificacoes] = useState([])
   const [estatisticas, setEstatisticas] = useState([])
 
   const handleSetSecaoAtiva = (secao) => {
     setSecaoAtiva(secao)
-    if (!['dashboard-pro', 'notificacoes', 'agenda', 'avaliacoes'].includes(secao)) {
+    if (!['inicio', 'notificacoes', 'agenda', 'avaliacoes'].includes(secao)) {
       navigate('/dashboard')
     }
   }
@@ -90,7 +90,7 @@ function DashboardProfissional() {
   if (!dadosProfissional) {
     return (
       <PageTransition>
-        <Header secaoAtiva={secaoAtiva} setSecaoAtiva={handleSetSecaoAtiva} aoClicarLogin={() => navigate('/')} />
+        <HeaderProfissional secaoAtiva={secaoAtiva} setSecaoAtiva={handleSetSecaoAtiva} aoClicarLogin={() => navigate('/')} />
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Carregando dashboard...</p>
@@ -101,11 +101,11 @@ function DashboardProfissional() {
 
   return (
     <PageTransition>
-      <Header secaoAtiva={secaoAtiva} setSecaoAtiva={handleSetSecaoAtiva} aoClicarLogin={() => navigate('/')} />
+      <HeaderProfissional secaoAtiva={secaoAtiva} setSecaoAtiva={handleSetSecaoAtiva} aoClicarLogin={() => navigate('/')} />
       
       <main className="dashboard-pro">
         <div className="dashboard-container">
-          {secaoAtiva === 'dashboard-pro' && (
+          {secaoAtiva === 'inicio' && (
             <>
               {/* Header do Dashboard */}
               <div className="dashboard-header professional">
@@ -173,7 +173,7 @@ function DashboardProfissional() {
                   
                   <div className="profile-actions">
                     <button className="action-btn primary" onClick={() => navigate('/perfil-profissional')}>
-                      Editar Perfil
+                      Perfil
                     </button>
                     <button className="action-btn" onClick={() => navigate('/chat')}>
                       Mensagens

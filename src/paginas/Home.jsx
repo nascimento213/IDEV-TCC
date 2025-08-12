@@ -53,7 +53,14 @@ function Home() {
   return (
     <PageTransition>
       <HomeHeader 
-        aoClicarLogin={() => setMostrarLogin(true)}
+        aoClicarLogin={(tipoUsuario) => {
+          if (tipoUsuario) {
+            // Aqui você pode definir o tipo de usuário antes de mostrar o login
+            setMostrarLogin(true)
+          } else {
+            setMostrarLogin(true)
+          }
+        }}
       />
 
       <main style={{ 

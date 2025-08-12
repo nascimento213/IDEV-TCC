@@ -1,0 +1,221 @@
+.header-profissional {
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  padding: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-profissional .header-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  height: 70px;
+  position: relative;
+}
+
+.header-profissional .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: transform 0.2s ease;
+  text-decoration: none;
+  cursor: pointer;
+  position: absolute;
+  left: 0;
+  padding-left: 1rem;
+}
+
+.header-profissional .logo:hover {
+  transform: scale(1.05);
+}
+
+.header-profissional .logo img {
+  height: 40px;
+}
+
+.header-profissional .logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header-profissional .nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header-profissional .nav-item {
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  position: relative;
+  border-radius: 8px;
+}
+
+.header-profissional .nav-item:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.header-profissional .nav-item.active {
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+}
+
+.header-profissional .nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: white;
+  border-radius: 1px;
+}
+
+.header-profissional .user-profile-container {
+  position: absolute;
+  right: 40px;
+}
+
+.header-profissional .user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.header-profissional .user-profile:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.header-profissional .user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.header-profissional .user-name {
+  color: white;
+  font-weight: 500;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+
+
+.header-profissional .profile-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  padding: 0.5rem;
+  min-width: 180px;
+  z-index: 1001;
+  border: 1px solid #e2e8f0;
+}
+
+.header-profissional .menu-item {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.header-profissional .menu-item:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.header-profissional .menu-item.logout {
+  color: #dc2626;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.header-profissional .menu-item.logout:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.header-profissional .menu-toggle {
+  display: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .header-profissional .menu-toggle {
+    display: block;
+  }
+
+  .header-profissional .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.5rem;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .header-profissional .nav.mobile-open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .header-profissional .nav-item {
+    width: 100%;
+    text-align: center;
+  }
+
+  .header-profissional .user-name {
+    display: none;
+  }
+}

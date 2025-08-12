@@ -589,17 +589,20 @@
 .profile-summary-card {
   background: white;
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   grid-column: 2 / 3;
-  grid-row: 2 / 3;
+  grid-row: 1 / 3;
+  align-self: start;
 }
 
 .profile-header-mini {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .profile-avatar-mini {
@@ -627,19 +630,23 @@
 
 .profile-actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  flex-direction: row;
+  gap: 30px;
 }
 
 .action-btn {
-  padding: 0.75rem 1rem;
+  padding: 1rem 2rem;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background: #f8fafc;
+  border-radius: 6px;
+  background: white;
   color: #475569;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
+  font-size: 1rem;
+  text-align: center;
+  white-space: nowrap;
+  min-width: 140px;
 }
 
 .action-btn.primary {
@@ -649,11 +656,14 @@
 }
 
 .action-btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
 }
 
 .action-btn.primary:hover {
   background: #2563eb;
+  border-color: #2563eb;
 }
 
 /* Responsividade */

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Header from '../componentes/Header'
+import HeaderProfissional from '../componentes/HeaderProfissional'
 import PageTransition from '../componentes/PageTransition'
 
 function PerfilProfissional() {
@@ -52,7 +52,7 @@ function PerfilProfissional() {
 
   return (
     <PageTransition>
-      <Header secaoAtiva="perfil-profissional" setSecaoAtiva={() => {}} aoClicarLogin={() => navigate('/')} />
+      <HeaderProfissional secaoAtiva="perfil-profissional" setSecaoAtiva={() => {}} aoClicarLogin={() => navigate('/')} />
       
       <main style={{
         minHeight: 'calc(100vh - 70px)',
@@ -383,8 +383,8 @@ function PerfilProfissional() {
               <div style={{
                 display: 'flex',
                 gap: '1rem',
-                justifyContent: 'flex-end',
-                marginTop: '1rem'
+                justifyContent: 'space-between',
+                marginTop: '2rem'
               }}>
                 <button
                   type="button"
@@ -407,32 +407,58 @@ function PerfilProfissional() {
                     e.target.style.backgroundColor = '#f3f4f6'
                   }}
                 >
-                  Cancelar
+                  Voltar
                 </button>
-                <button
-                  type="submit"
-                  style={{
-                    padding: '0.875rem 2rem',
-                    backgroundColor: '#3b82f6',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseOver={(e) => {
-                    e.target.style.backgroundColor = '#2563eb'
-                    e.target.style.transform = 'translateY(-1px)'
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.backgroundColor = '#3b82f6'
-                    e.target.style.transform = 'translateY(0)'
-                  }}
-                >
-                  Salvar Perfil
-                </button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button
+                    type="button"
+                    style={{
+                      padding: '0.875rem 2rem',
+                      backgroundColor: '#10b981',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.backgroundColor = '#059669'
+                      e.target.style.transform = 'translateY(-1px)'
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.backgroundColor = '#10b981'
+                      e.target.style.transform = 'translateY(0)'
+                    }}
+                  >
+                    Editar Perfil
+                  </button>
+                  <button
+                    type="submit"
+                    style={{
+                      padding: '0.875rem 2rem',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.backgroundColor = '#2563eb'
+                      e.target.style.transform = 'translateY(-1px)'
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.backgroundColor = '#3b82f6'
+                      e.target.style.transform = 'translateY(0)'
+                    }}
+                  >
+                    Salvar Perfil
+                  </button>
+                </div>
               </div>
             </form>
           </div>
