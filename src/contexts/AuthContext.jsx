@@ -24,12 +24,19 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(false)
   }
 
+  const switchUserType = (newType) => {
+    if (user) {
+      setUser({ ...user, type: newType })
+    }
+  }
+
   return (
     <AuthContext.Provider value={{
       user,
       isLoggedIn,
       login,
-      logout
+      logout,
+      switchUserType
     }}>
       {children}
     </AuthContext.Provider>

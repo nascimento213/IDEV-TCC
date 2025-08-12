@@ -1,15 +1,25 @@
 import { useState } from 'react'
+import { useAuth } from '../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 function Login({ mostrar, fechar }) {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [nome, setNome] = useState('')
   const [ehCadastro, setEhCadastro] = useState(false)
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   function fazerLogin(e) {
     e.preventDefault()
     alert('Login feito com: ' + email)
     fechar()
+  }
+
+  function entrarModoDesenvolvedor() {
+    login({ nome: 'Dev User', email: 'dev@test.com' }, 'cliente')
+    fechar()
+    navigate('/dashboard')
   }
 
   function fazerCadastro(e) {
@@ -195,6 +205,30 @@ function Login({ mostrar, fechar }) {
                 Não tem uma conta? Clique aqui
               </a>
             </p>
+            
+            <div style={{ 
+              borderTop: '1px solid #eee', 
+              marginTop: '20px', 
+              paddingTop: '15px' 
+            }}>
+              <button 
+                type="button"
+                onClick={entrarModoDesenvolvedor}
+                style={{ 
+                  width: '100%', 
+                  padding: '10px', 
+                  backgroundColor: '#6c757d', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '5px', 
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  opacity: '0.8'
+                }}
+              >
+                🚀 Modo Dev
+              </button>
+            </div>
           </form>
         )}
       </div>

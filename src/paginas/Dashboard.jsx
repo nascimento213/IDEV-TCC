@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import '../assets/css/style.css'
 import Header from '../componentes/Header'
 import Carousel from '../componentes/Carousel'
@@ -10,6 +12,8 @@ import Footer from '../componentes/Footer'
 const Dashboard = () => {
   const [secaoAtiva, setSecaoAtiva] = useState('inicio');
   const [mostrarLogin, setMostrarLogin] = useState(false);
+  const navigate = useNavigate();
+  const { switchUserType } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -57,8 +61,8 @@ const Dashboard = () => {
   const professionals = [
     {
       id: 1,
-      name: 'Samuel Nascimento',
-      title: 'Desenvolvedora Full Stack',
+      name: 'João Silva',
+      title: 'Desenvolvedor Full Stack',
       skills: ['React', 'Node.js', 'MongoDB'],
       location: 'São Paulo, SP'
     },
@@ -88,17 +92,51 @@ const Dashboard = () => {
   const projects = [
     {
       id: 1,
-      title: 'Plataforma E-commerce',
-      description: 'Desenvolvimento de plataforma de e-commerce com React e Node.js',
-      skills: ['React', 'Node.js', 'MongoDB'],
-      budget: 'R$ 15.000 - R$ 20.000'
+      title: 'EcoMarket - Marketplace Sustentável',
+      description: 'Plataforma de e-commerce focada em produtos ecológicos e sustentáveis com sistema de pontuação verde',
+      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=250&fit=crop',
+      skills: ['React', 'Node.js', 'MongoDB', 'Stripe'],
+      budget: 'R$ 25.000 - R$ 35.000'
     },
     {
       id: 2,
-      title: 'App de Delivery',
-      description: 'Aplicativo mobile para delivery de restaurantes',
-      skills: ['React Native', 'Firebase'],
-      budget: 'R$ 10.000 - R$ 12.000'
+      title: 'FoodieConnect - App de Delivery',
+      description: 'Aplicativo mobile que conecta chefs locais com clientes, incluindo sistema de avaliação e chat em tempo real',
+      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=250&fit=crop',
+      skills: ['React Native', 'Firebase', 'Socket.io'],
+      budget: 'R$ 18.000 - R$ 22.000'
+    },
+    {
+      id: 3,
+      title: 'MindSpace - Plataforma de Bem-estar',
+      description: 'Sistema web para agendamento de terapias online com videochamadas integradas e acompanhamento de progresso',
+      image: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
+      skills: ['Vue.js', 'WebRTC', 'PostgreSQL', 'AWS'],
+      budget: 'R$ 30.000 - R$ 40.000'
+    },
+    {
+      id: 4,
+      title: 'SmartHome Dashboard',
+      description: 'Interface web para controle de dispositivos IoT residenciais com automação inteligente e análise de consumo',
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop',
+      skills: ['Angular', 'Python', 'MQTT', 'InfluxDB'],
+      budget: 'R$ 20.000 - R$ 28.000'
+    },
+    {
+      id: 5,
+      title: 'EduTech - Plataforma de Ensino',
+      description: 'Sistema completo de gestão educacional com aulas ao vivo, gamificação e acompanhamento de desempenho',
+      image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=400&h=250&fit=crop',
+      skills: ['React', 'Django', 'Redis', 'Docker'],
+      budget: 'R$ 45.000 - R$ 60.000'
+    },
+    {
+      id: 6,
+      title: 'CryptoTracker Pro',
+      description: 'Dashboard avançado para análise de criptomoedas com gráficos em tempo real e alertas personalizados',
+      image: 'https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=400&h=250&fit=crop',
+      skills: ['Next.js', 'TypeScript', 'Chart.js', 'WebSocket'],
+      budget: 'R$ 15.000 - R$ 25.000'
     }
   ];
 
@@ -119,8 +157,12 @@ const Dashboard = () => {
 
         {secaoAtiva === 'inicio' && (
           <>
-            <section className="hero">
+            <section className="hero client">
               <div className="container">
+                <div className="hero-header">
+                  <div className="hero-title">
+                  </div>
+                </div>
                 <div className="search-bar">
                   <span className="search-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
@@ -133,9 +175,9 @@ const Dashboard = () => {
               </div>
             </section>
 
-            <section className="categories">
+            <section className="categories client">
               <div className="container">
-                <h2>Explore por categoria</h2>
+                <h2>Encontre Profissionais por Categoria</h2>
                 <div className="category-cards">
                   {categories.map(category => (
                     <div key={category.id} className="category-card">
@@ -150,16 +192,81 @@ const Dashboard = () => {
         )}
 
         {secaoAtiva === 'projetos' && (
-          <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-            <h2>Projetos em desenvolvimento...</h2>
-          </div>
+          <section className="projects-section">
+            <div className="container">
+              <h2>Projetos em Destaque</h2>
+              <div className="projects-grid">
+                {projects.map(project => (
+                  <div key={project.id} className="project-card">
+                    <div className="project-image">
+                      <img src={project.image} alt={project.title} />
+                    </div>
+                    <div className="project-content">
+                      <h3>{project.title}</h3>
+                      <p>{project.description}</p>
+                      <div className="project-skills">
+                        {project.skills.map((skill, index) => (
+                          <span key={index} className="skill-tag">{skill}</span>
+                        ))}
+                      </div>
+                      <div className="project-footer">
+                        <span className="project-budget">{project.budget}</span>
+                        <button className="btn-details">Ver Detalhes</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         )}
 
         {secaoAtiva === 'sobre' && (
-          <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-            <h2>Sobre a IDev</h2>
-            <p>Plataforma que conecta profissionais de TI com oportunidades.</p>
-          </div>
+          <section className="about-section">
+            <div className="container">
+              <div className="about-content">
+                <div className="about-header">
+                  <h2>Sobre a IDev</h2>
+                  <div className="about-divider"></div>
+                </div>
+                
+                <div className="about-text">
+                  <p>
+                    A IDev nasceu da necessidade de conectar talentos de TI com oportunidades reais de forma mais eficiente e humana. 
+                    Como desenvolvedor, sempre senti a dificuldade de encontrar projetos que realmente fizessem sentido para meu perfil e experiência. 
+                    Esta plataforma foi criada para resolver esse problema, oferecendo um espaço onde profissionais podem mostrar seu verdadeiro potencial 
+                    e clientes podem encontrar exatamente o que procuram.
+                  </p>
+                  
+                  <p>
+                    Meu objetivo é simples: facilitar conexões autênticas no mundo tech. Acredito que cada projeto merece o profissional certo, 
+                    e cada desenvolvedor merece oportunidades que o desafiem e o façam crescer. A IDev é mais que uma plataforma de freelance - 
+                    é uma comunidade onde qualidade, transparência e crescimento mútuo são os pilares fundamentais.
+                  </p>
+                </div>
+                
+                <div className="about-stats">
+                  <div className="stat-item">
+                    <h3>500+</h3>
+                    <p>Profissionais Cadastrados</p>
+                  </div>
+                  <div className="stat-item">
+                    <h3>200+</h3>
+                    <p>Projetos Concluídos</p>
+                  </div>
+                  <div className="stat-item">
+                    <h3>98%</h3>
+                    <p>Taxa de Satisfação</p>
+                  </div>
+                </div>
+                
+                <div className="about-cta">
+                  <button className="btn-primary" onClick={() => setSecaoAtiva('profissionais')}>Conhecer Profissionais</button>
+                  <button className="btn-outline" onClick={() => setSecaoAtiva('projetos')}>Ver Projetos</button>
+                </div>
+              </div>
+            </div>
+          </section>
         )}
       </SectionTransition>
 

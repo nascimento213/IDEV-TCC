@@ -21,7 +21,11 @@ function UserTypeModal({ mostrar, fechar, onSelect, showLogin }) {
 
   const handleSelect = (tipo) => {
     if (isLoggedIn) {
-      onSelect(tipo)
+      if (tipo === 'profissional') {
+        navigate('/dashboard-profissional')
+      } else {
+        onSelect(tipo)
+      }
       handleClose()
     } else {
       localStorage.setItem('selectedUserType', tipo)

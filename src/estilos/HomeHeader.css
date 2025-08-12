@@ -24,8 +24,7 @@
   text-decoration: none;
   cursor: pointer;
   position: absolute;
-  left: 0;
-  padding-left: 1rem;
+  left: 20px;
 }
 
 .home-logo:hover {
@@ -55,7 +54,7 @@
   font-weight: 600;
   white-space: nowrap;
   position: absolute;
-  right: 40px;
+  right: 20px;
 }
 
 .home-login-btn:hover {
@@ -72,14 +71,13 @@
   }
   
   .home-logo {
-    left: 0;
-    padding-left: 0.5rem;
+    left: 20px;
   }
   
   .home-login-btn {
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
-    right: 40px;
+    right: 20px;
   }
 }
 

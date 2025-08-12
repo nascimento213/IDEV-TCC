@@ -33,7 +33,7 @@ function ModernLogin({ mostrar, fechar }) {
     localStorage.removeItem('selectedUserType')
     
     if (selectedUserType === 'profissional') {
-      navigate('/perfil-profissional')
+      navigate('/dashboard-profissional')
     } else {
       navigate('/dashboard')
     }

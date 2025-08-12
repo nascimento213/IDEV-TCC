@@ -47,6 +47,10 @@ function Perfil() {
     setSecaoAtiva(secao)
     if (secao === 'inicio') {
       navigate('/dashboard')
+      setTimeout(() => {
+        const event = new CustomEvent('setDashboardSection', { detail: 'inicio' })
+        window.dispatchEvent(event)
+      }, 50)
     } else if (secao !== 'perfil') {
       navigate('/dashboard')
     }

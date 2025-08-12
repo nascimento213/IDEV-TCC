@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../componentes/Header'
 import PageTransition from '../componentes/PageTransition'
@@ -6,12 +6,12 @@ import PageTransition from '../componentes/PageTransition'
 function PerfilProfissional() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    github: '',
-    linguagens: [],
-    experiencia: '',
-    projetos: ''
+    nome: 'Samuel Nascimento',
+    email: 'samuel@email.com',
+    github: 'https://github.com/samuel',
+    linguagens: ['React', 'Node.js', 'JavaScript', 'TypeScript', 'MongoDB'],
+    experiencia: 'Desenvolvedor Full Stack com 3 anos de experiência em projetos web modernos. Especializado em React, Node.js e arquiteturas escaláveis.',
+    projetos: 'Desenvolvimento de plataformas e-commerce, aplicativos mobile e sistemas de gestão. Experiência com metodologias ágeis e trabalho em equipe.'
   })
   const [novaLinguagem, setNovaLinguagem] = useState('')
 
@@ -47,7 +47,7 @@ function PerfilProfissional() {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log('Perfil profissional:', formData)
-    navigate('/perfil/1')
+    navigate('/dashboard-profissional')
   }
 
   return (
@@ -388,7 +388,7 @@ function PerfilProfissional() {
               }}>
                 <button
                   type="button"
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate('/dashboard-profissional')}
                   style={{
                     padding: '0.875rem 2rem',
                     backgroundColor: '#f3f4f6',

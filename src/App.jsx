@@ -7,6 +7,7 @@ import Cadastro from './paginas/Cadastro'
 import Perfil from './paginas/Perfil'
 import PerfilProfissional from './paginas/PerfilProfissional'
 import Chat from './paginas/Chat'
+import DashboardProfissional from './paginas/DashboardProfissional'
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/perfil/:id" element={<Perfil />} />
         <Route path="/perfil-profissional" element={<PerfilProfissional />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard-profissional" element={<DashboardProfissional />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/about" element={<About />} />
       </Routes>

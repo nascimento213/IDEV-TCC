@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Header from '../componentes/Header'
+import CadastroHeader from '../componentes/CadastroHeader'
 import PageTransition from '../componentes/PageTransition'
 
 function Cadastro() {
@@ -31,7 +31,7 @@ function Cadastro() {
 
   return (
     <PageTransition>
-      <Header secaoAtiva="cadastro" setSecaoAtiva={() => {}} aoClicarLogin={() => navigate('/')} />
+      <CadastroHeader />
       
       <main style={{
         minHeight: 'calc(100vh - 70px)',
