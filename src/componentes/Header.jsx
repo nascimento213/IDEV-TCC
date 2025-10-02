@@ -126,6 +126,15 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
                 >
                   Ver Perfil
                 </button>
+                <button 
+                  onClick={() => {
+                    navigate('/requests')
+                    setShowProfileMenu(false)
+                  }}
+                  className="menu-item"
+                >
+                  Meus Requests
+                </button>
                 {user?.type === 'cliente' && (
                   <button 
                     onClick={() => {
