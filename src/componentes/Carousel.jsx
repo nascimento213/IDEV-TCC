@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import '../estilos/Carousel.css'
+import '../assets/css/Carousel.css'
 
 function Carousel({ profissionais }) {
   const [currentIndex, setCurrentIndex] = useState(0)

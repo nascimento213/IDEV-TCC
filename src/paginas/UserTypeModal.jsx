@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import '../estilos/UserTypeModal.css'
+import '../assets/css/UserTypeModal.css'
 
 function UserTypeModal({ mostrar, fechar, onSelect, showLogin }) {
   const [animating, setAnimating] = useState(false)

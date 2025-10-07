@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import '../estilos/Header.css'
+import '../assets/css/Header.css'
 
 function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
   const [menuAberto, setMenuAberto] = useState(false)

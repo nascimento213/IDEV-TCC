@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import HeaderProfissional from '../componentes/HeaderProfissional'
 import PageTransition from '../componentes/PageTransition'
-import '../estilos/DashboardProfissional.css'
+import '../assets/css/DashboardProfissional.css'
 
 // Mock data simulando dados do banco - Perfil Profissional
 const mockProfessionalData = {

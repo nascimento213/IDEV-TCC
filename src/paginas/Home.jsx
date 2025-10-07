@@ -5,7 +5,7 @@ import HomeHeader from '../componentes/HomeHeader'
 import ModernLogin from '../componentes/ModernLogin'
 import UserTypeModal from './UserTypeModal'
 import PageTransition from '../componentes/PageTransition'
-import '../estilos/Home.css'
+import '../assets/css/Home.css'
 
 function Home() {
   const [mostrarLogin, setMostrarLogin] = useState(false)

@@ -1,4 +1,4 @@
-import '../estilos/PageTransition.css'
+import '../assets/css/PageTransition.css'
 
 function SectionTransition({ children, sectionKey }) {
   return (

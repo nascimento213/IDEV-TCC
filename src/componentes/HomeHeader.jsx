@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import '../estilos/HomeHeader.css'
+import '../assets/css/HomeHeader.css'
 
 function HomeHeader({ aoClicarLogin }) {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false)
