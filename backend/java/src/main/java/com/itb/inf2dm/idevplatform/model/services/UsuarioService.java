@@ -1,7 +1,7 @@
-package com.itb.inf2dm.pizzariad.model.services;
+package com.itb.inf2dm.idevplatform.model.services;
 
-import com.itb.inf2dm.pizzariad.model.entity.Usuario;
-import com.itb.inf2dm.pizzariad.model.repository.UsuarioRepository;
+import com.itb.inf2dm.idevplatform.model.entity.Usuario;
+import com.itb.inf2dm.idevplatform.model.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -34,16 +34,18 @@ public class UsuarioService {
     public List<Usuario> findProfissionais() {
         return usuarioRepository.findProfissionais();
     }
+    
+    public List<Usuario> findEmpresas() {
+        return usuarioRepository.findEmpresas();
+    }
 
     public Usuario update(Long id, Usuario usuario) {
         Usuario usuarioExistente = findById(id);
         usuarioExistente.setNome(usuario.getNome());
         usuarioExistente.setTelefone(usuario.getTelefone());
-        usuarioExistente.setLocalizacao(usuario.getLocalizacao());
         usuarioExistente.setFotoPerfil(usuario.getFotoPerfil());
         usuarioExistente.setBio(usuario.getBio());
         usuarioExistente.setGithubUrl(usuario.getGithubUrl());
-        usuarioExistente.setDisponibilidade(usuario.getDisponibilidade());
         return usuarioRepository.save(usuarioExistente);
     }
 

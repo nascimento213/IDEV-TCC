@@ -1,7 +1,7 @@
-package com.itb.inf2dm.pizzariad.controller;
+package com.itb.inf2dm.idevplatform.controller;
 
-import com.itb.inf2dm.pizzariad.model.entity.Request;
-import com.itb.inf2dm.pizzariad.model.services.RequestService;
+import com.itb.inf2dm.idevplatform.model.entity.Request;
+import com.itb.inf2dm.idevplatform.model.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

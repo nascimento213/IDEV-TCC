@@ -158,13 +158,7 @@ function Perfil() {
               O perfil com ID "{id}" não existe ou foi removido.
             </p>
             <button
-              onClick={() => {
-                navigate('/dashboard')
-                setTimeout(() => {
-                  const event = new CustomEvent('setDashboardSection', { detail: 'inicio' })
-                  window.dispatchEvent(event)
-                }, 100)
-              }}
+              onClick={() => handleSetSecaoAtiva('inicio')}
               style={{
                 padding: '0.75rem 1.5rem',
                 backgroundColor: '#3b82f6',
@@ -338,25 +332,15 @@ function Perfil() {
                 flexDirection: 'column',
                 gap: '0.75rem'
               }}>
+
                 <button
-                  style={{
-                    padding: '0.75rem 1rem',
-                    backgroundColor: '#3b82f6',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '0.9rem',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                  onClick={() => {
+                    navigate('/dashboard')
+                    setTimeout(() => {
+                      const event = new CustomEvent('setDashboardSection', { detail: 'inicio' })
+                      window.dispatchEvent(event)
+                    }, 50)
                   }}
-                  onMouseOver={(e) => e.target.style.backgroundColor = '#2563eb'}
-                  onMouseOut={(e) => e.target.style.backgroundColor = '#3b82f6'}
-                >
-                  Enviar mensagem
-                </button>
-                <button
-                  onClick={() => navigate('/')}
                   style={{
                     padding: '0.75rem 1rem',
                     backgroundColor: '#f3f4f6',

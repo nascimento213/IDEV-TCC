@@ -59,26 +59,6 @@ function Carousel({ profissionais }) {
     <div className="modern-carousel">
       <div className="carousel-header">
         <h2 className="carousel-title">Profissionais em Destaque</h2>
-        <div className="carousel-navigation">
-          <button 
-            className="nav-btn nav-btn-prev" 
-            onClick={prevSlide}
-            disabled={isAnimating}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 18l-6-6 6-6"/>
-            </svg>
-          </button>
-          <button 
-            className="nav-btn nav-btn-next" 
-            onClick={nextSlide}
-            disabled={isAnimating}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
-          </button>
-        </div>
       </div>
       
       <div className="carousel-track">
@@ -106,22 +86,7 @@ function Carousel({ profissionais }) {
                   />
                   <div className="status-indicator"></div>
                 </div>
-                <div className="card-actions">
-                  <button className="action-btn favorite">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                    </svg>
-                  </button>
-                  <button className="action-btn share">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="18" cy="5" r="3"/>
-                      <circle cx="6" cy="12" r="3"/>
-                      <circle cx="18" cy="19" r="3"/>
-                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                    </svg>
-                  </button>
-                </div>
+
               </div>
               
               <div className="card-content">
@@ -147,21 +112,44 @@ function Carousel({ profissionais }) {
               
               <div className="card-footer">
                 <button 
+                  className="btn-modern btn-like"
+                  onClick={() => console.log('Curtiu profissional:', professional.name)}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                </button>
+                <button 
                   className="btn-modern btn-primary-modern"
                   onClick={() => navigate(`/perfil/${professional.id}`)}
                 >
                   Ver Perfil
                 </button>
-                <button 
-                  className="btn-modern btn-secondary-modern"
-                  onClick={() => navigate('/chat')}
-                >
-                  Mensagem
-                </button>
               </div>
             </div>
           ))}
         </div>
+      </div>
+      
+      <div className="carousel-navigation">
+        <button 
+          className="nav-btn nav-btn-prev" 
+          onClick={prevSlide}
+          disabled={isAnimating}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        <button 
+          className="nav-btn nav-btn-next" 
+          onClick={nextSlide}
+          disabled={isAnimating}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
       </div>
       
       <div className="carousel-dots">

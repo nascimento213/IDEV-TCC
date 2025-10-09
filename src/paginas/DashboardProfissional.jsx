@@ -140,7 +140,6 @@ function DashboardProfissional() {
                 <div className="services-card">
                   <div className="card-header">
                     <h3>Meus Serviços</h3>
-                    <button className="add-service-btn">+ Adicionar</button>
                   </div>
                   
                   <div className="services-list">
@@ -172,11 +171,8 @@ function DashboardProfissional() {
                   </div>
                   
                   <div className="profile-actions">
-                    <button className="action-btn primary" onClick={() => navigate('/perfil-profissional')}>
-                      Perfil
-                    </button>
-                    <button className="action-btn" onClick={() => navigate('/chat')}>
-                      Mensagens
+                    <button className="action-btn primary" style={{ width: '100%' }} onClick={() => navigate('/perfil-profissional')}>
+                      Editar Perfil
                     </button>
                   </div>
                 </div>

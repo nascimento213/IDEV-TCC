@@ -117,7 +117,7 @@ function RequestForm() {
                   boxSizing: 'border-box'
                 }}
               >
-                <option value="">Selecione uma categoria</option>
+                <option value="" disabled>Selecione uma categoria</option>
                 <option value="sugestao">Sugestão</option>
                 <option value="reclamacao">Reclamação</option>
               </select>
@@ -177,7 +177,7 @@ function RequestForm() {
                   boxSizing: 'border-box'
                 }}
               >
-                <option value="">Selecione a prioridade</option>
+                <option value="" disabled>Selecione a prioridade</option>
                 <option value="baixa">Baixa</option>
                 <option value="media">Média</option>
                 <option value="alta">Alta</option>

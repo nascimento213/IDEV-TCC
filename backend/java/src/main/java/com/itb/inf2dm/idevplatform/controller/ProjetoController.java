@@ -1,7 +1,7 @@
-package com.itb.inf2dm.pizzariad.controller;
+package com.itb.inf2dm.idevplatform.controller;
 
-import com.itb.inf2dm.pizzariad.model.entity.Projeto;
-import com.itb.inf2dm.pizzariad.model.services.ProjetoService;
+import com.itb.inf2dm.idevplatform.model.entity.Projeto;
+import com.itb.inf2dm.idevplatform.model.services.ProjetoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +28,9 @@ public class ProjetoController {
         return ResponseEntity.ok(projetoService.findProjetosAbertos());
     }
 
-    @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<List<Projeto>> listarProjetosPorCliente(@PathVariable Long clienteId) {
-        return ResponseEntity.ok(projetoService.findByClienteId(clienteId));
+    @GetMapping("/empresa/{empresaId}")
+    public ResponseEntity<List<Projeto>> listarProjetosPorEmpresa(@PathVariable Long empresaId) {
+        return ResponseEntity.ok(projetoService.findByEmpresaId(empresaId));
     }
 
     @GetMapping("/profissional/{profissionalId}")

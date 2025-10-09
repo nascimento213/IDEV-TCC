@@ -1,4 +1,4 @@
-package com.itb.inf2dm.pizzariad.model.entity;
+package com.itb.inf2dm.idevplatform.model.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

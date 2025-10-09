@@ -1,7 +1,7 @@
-package com.itb.inf2dm.pizzariad.model.services;
+package com.itb.inf2dm.idevplatform.model.services;
 
-import com.itb.inf2dm.pizzariad.model.entity.Request;
-import com.itb.inf2dm.pizzariad.model.repository.RequestRepository;
+import com.itb.inf2dm.idevplatform.model.entity.Request;
+import com.itb.inf2dm.idevplatform.model.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;

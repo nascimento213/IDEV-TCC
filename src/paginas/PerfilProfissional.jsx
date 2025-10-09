@@ -44,9 +44,15 @@ function PerfilProfissional() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSalvarPerfil = (e) => {
     e.preventDefault()
-    console.log('Perfil profissional:', formData)
+    // Aqui será feita a atualização no banco de dados
+    console.log('Atualizando perfil no banco de dados:', formData)
+    // TODO: Implementar chamada para API de atualização
+    alert('Perfil salvo com sucesso!')
+  }
+
+  const handleVoltar = () => {
     navigate('/dashboard-profissional')
   }
 
@@ -88,7 +94,7 @@ function PerfilProfissional() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <form onSubmit={handleSalvarPerfil} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                 <div>
                   <label style={{
@@ -383,12 +389,12 @@ function PerfilProfissional() {
               <div style={{
                 display: 'flex',
                 gap: '1rem',
-                justifyContent: 'space-between',
+                justifyContent: 'flex-end',
                 marginTop: '2rem'
               }}>
                 <button
                   type="button"
-                  onClick={() => navigate('/dashboard-profissional')}
+                  onClick={handleVoltar}
                   style={{
                     padding: '0.875rem 2rem',
                     backgroundColor: '#f3f4f6',
@@ -409,56 +415,30 @@ function PerfilProfissional() {
                 >
                   Voltar
                 </button>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  <button
-                    type="button"
-                    style={{
-                      padding: '0.875rem 2rem',
-                      backgroundColor: '#10b981',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseOver={(e) => {
-                      e.target.style.backgroundColor = '#059669'
-                      e.target.style.transform = 'translateY(-1px)'
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.style.backgroundColor = '#10b981'
-                      e.target.style.transform = 'translateY(0)'
-                    }}
-                  >
-                    Editar Perfil
-                  </button>
-                  <button
-                    type="submit"
-                    style={{
-                      padding: '0.875rem 2rem',
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseOver={(e) => {
-                      e.target.style.backgroundColor = '#2563eb'
-                      e.target.style.transform = 'translateY(-1px)'
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.style.backgroundColor = '#3b82f6'
-                      e.target.style.transform = 'translateY(0)'
-                    }}
-                  >
-                    Salvar Perfil
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  style={{
+                    padding: '0.875rem 2rem',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.backgroundColor = '#2563eb'
+                    e.target.style.transform = 'translateY(-1px)'
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.backgroundColor = '#3b82f6'
+                    e.target.style.transform = 'translateY(0)'
+                  }}
+                >
+                  Salvar Perfil
+                </button>
               </div>
             </form>
           </div>

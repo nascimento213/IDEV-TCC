@@ -1,7 +1,7 @@
-package com.itb.inf2dm.pizzariad.controller;
+package com.itb.inf2dm.idevplatform.controller;
 
-import com.itb.inf2dm.pizzariad.model.entity.Usuario;
-import com.itb.inf2dm.pizzariad.model.services.UsuarioService;
+import com.itb.inf2dm.idevplatform.model.entity.Usuario;
+import com.itb.inf2dm.idevplatform.model.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,11 @@ public class UsuarioController {
     @GetMapping("/profissionais")
     public ResponseEntity<List<Usuario>> listarProfissionais() {
         return ResponseEntity.ok(usuarioService.findProfissionais());
+    }
+    
+    @GetMapping("/empresas")
+    public ResponseEntity<List<Usuario>> listarEmpresas() {
+        return ResponseEntity.ok(usuarioService.findEmpresas());
     }
 
     @PostMapping("/login")

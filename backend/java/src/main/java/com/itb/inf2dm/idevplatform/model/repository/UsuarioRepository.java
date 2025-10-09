@@ -1,6 +1,6 @@
-package com.itb.inf2dm.pizzariad.model.repository;
+package com.itb.inf2dm.idevplatform.model.repository;
 
-import com.itb.inf2dm.pizzariad.model.entity.Usuario;
+import com.itb.inf2dm.idevplatform.model.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,4 +16,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     
     @Query("SELECT u FROM Usuario u WHERE u.tipo = 'profissional' AND u.codStatus = true")
     List<Usuario> findProfissionais();
+    
+    @Query("SELECT u FROM Usuario u WHERE u.tipo = 'empresa' AND u.codStatus = true")
+    List<Usuario> findEmpresas();
 }

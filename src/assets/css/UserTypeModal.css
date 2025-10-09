@@ -122,8 +122,8 @@
 }
 
 .user-type-button.client {
-  border-color: #667eea;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: #008cff;
+  background: linear-gradient(135deg, #427af3, #5985ff);
   box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
 }
 
@@ -132,13 +132,13 @@
 }
 
 .user-type-button.professional {
-  border-color: #28a745;
-  background: linear-gradient(135deg, #28a745, #20c997);
-  box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4);
+  border-color: #000000;
+  background: linear-gradient(135deg, #000000, #000000);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
 }
 
 .user-type-button.professional:hover {
-  box-shadow: 0 20px 40px rgba(40, 167, 69, 0.5);
+  box-shadow: 0 20px 40px rgba(255, 255, 255, 0.5);
 }
 
 .button-icon {

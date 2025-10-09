@@ -1,4 +1,4 @@
-package com.itb.inf2dm.pizzariad.model.entity;
+package com.itb.inf2dm.idevplatform.model.entity;
 
 import jakarta.persistence.*;
 
@@ -25,9 +25,6 @@ public class Usuario {
     @Column(length = 15)
     private String telefone;
     
-    @Column(length = 100)
-    private String localizacao;
-    
     @Column(name = "FOTO_PERFIL", length = 255)
     private String fotoPerfil;
     
@@ -36,9 +33,6 @@ public class Usuario {
     
     @Column(name = "GITHUB_URL", length = 255)
     private String githubUrl;
-    
-    @Column(length = 20)
-    private String disponibilidade = "DISPONIVEL";
     
     @Column(name = "COD_STATUS")
     private boolean codStatus = true;
@@ -62,9 +56,6 @@ public class Usuario {
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
     
-    public String getLocalizacao() { return localizacao; }
-    public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
-    
     public String getFotoPerfil() { return fotoPerfil; }
     public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
     
@@ -73,9 +64,6 @@ public class Usuario {
     
     public String getGithubUrl() { return githubUrl; }
     public void setGithubUrl(String githubUrl) { this.githubUrl = githubUrl; }
-    
-    public String getDisponibilidade() { return disponibilidade; }
-    public void setDisponibilidade(String disponibilidade) { this.disponibilidade = disponibilidade; }
     
     public boolean isCodStatus() { return codStatus; }
     public void setCodStatus(boolean codStatus) { this.codStatus = codStatus; }

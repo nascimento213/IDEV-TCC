@@ -1,4 +1,4 @@
-package com.itb.inf2dm.pizzariad.model.entity;
+package com.itb.inf2dm.idevplatform.model.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -17,8 +17,8 @@ public class Projeto {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String descricao;
     
-    @Column(name = "CLIENTE_ID", nullable = false)
-    private Long clienteId;
+    @Column(name = "EMPRESA_ID", nullable = false)
+    private Long empresaId;
     
     @Column(name = "PROFISSIONAL_ID")
     private Long profissionalId;
@@ -48,8 +48,8 @@ public class Projeto {
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
     
-    public Long getClienteId() { return clienteId; }
-    public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
+    public Long getEmpresaId() { return empresaId; }
+    public void setEmpresaId(Long empresaId) { this.empresaId = empresaId; }
     
     public Long getProfissionalId() { return profissionalId; }
     public void setProfissionalId(Long profissionalId) { this.profissionalId = profissionalId; }

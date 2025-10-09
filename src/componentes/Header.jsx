@@ -12,7 +12,7 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
   const userData = {
     id: 1,
     name: 'Samuel Nascimento',
-    avatar: '/src/assets/imagens/gato-de-terno-suit-cat.png'
+    avatar: null
   }
   
   const itensMenu = [
@@ -43,7 +43,18 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
       // Se estamos no dashboard profissional, não navegar para outras páginas
       return
     }
-    setSecaoAtiva(id)
+    
+    // Se não estamos no dashboard, navegar para lá primeiro
+    if (window.location.pathname !== '/dashboard') {
+      navigate('/dashboard')
+      setTimeout(() => {
+        const event = new CustomEvent('setDashboardSection', { detail: id })
+        window.dispatchEvent(event)
+      }, 50)
+    } else {
+      setSecaoAtiva(id)
+    }
+    
     setMenuAberto(false)
   }
 
@@ -112,7 +123,16 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
                 setShowProfileMenu(!showProfileMenu)
               }}
             >
-              <img src={userData.avatar} alt={userData.name} className="user-avatar" />
+              {userData.avatar ? (
+                <img src={userData.avatar} alt={userData.name} className="user-avatar" />
+              ) : (
+                <div className="user-avatar-placeholder">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+              )}
               <span className="user-name">{userData.name}</span>
             </div>
             {showProfileMenu && (
@@ -135,7 +155,7 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
                 >
                   Meus Requests
                 </button>
-                {user?.type === 'cliente' && (
+                {user?.type === 'empresa' && (
                   <button 
                     onClick={() => {
                       switchUserType('profissional')
@@ -150,13 +170,13 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
                 {user?.type === 'profissional' && (
                   <button 
                     onClick={() => {
-                      switchUserType('cliente')
+                      switchUserType('empresa')
                       navigate('/dashboard')
                       setShowProfileMenu(false)
                     }}
                     className="menu-item"
                   >
-                    Modo Cliente
+                    Modo Empresa
                   </button>
                 )}
                 <button 

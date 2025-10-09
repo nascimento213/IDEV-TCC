@@ -1,7 +1,7 @@
-package com.itb.inf2dm.pizzariad.model.services;
+package com.itb.inf2dm.idevplatform.model.services;
 
-import com.itb.inf2dm.pizzariad.model.entity.Projeto;
-import com.itb.inf2dm.pizzariad.model.repository.ProjetoRepository;
+import com.itb.inf2dm.idevplatform.model.entity.Projeto;
+import com.itb.inf2dm.idevplatform.model.repository.ProjetoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -30,8 +30,8 @@ public class ProjetoService {
         return projetoRepository.findProjetosAbertos();
     }
 
-    public List<Projeto> findByClienteId(Long clienteId) {
-        return projetoRepository.findByClienteId(clienteId);
+    public List<Projeto> findByEmpresaId(Long empresaId) {
+        return projetoRepository.findByEmpresaId(empresaId);
     }
 
     public List<Projeto> findByProfissionalId(Long profissionalId) {

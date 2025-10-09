@@ -12,8 +12,31 @@ import Footer from '../componentes/Footer'
 const Dashboard = () => {
   const [secaoAtiva, setSecaoAtiva] = useState('inicio');
   const [mostrarLogin, setMostrarLogin] = useState(false);
+  const [filtroSelecionado, setFiltroSelecionado] = useState('');
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (event.target.classList.contains('filtros-overlay')) {
+        setMostrarFiltros(false);
+      }
+    };
+    
+    if (mostrarFiltros) {
+      document.addEventListener('click', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [mostrarFiltros]);
   const navigate = useNavigate();
   const { switchUserType } = useAuth();
+
+  const habilidades = [
+    'JavaScript', 'React', 'Node.js', 'Python', 'Java', 'PHP', 'C#', 'Angular', 
+    'Vue.js', 'TypeScript', 'MongoDB', 'MySQL', 'PostgreSQL', 'Docker', 'AWS'
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -157,25 +180,73 @@ const Dashboard = () => {
 
         {secaoAtiva === 'inicio' && (
           <>
-            <section className="hero client">
+            <section className="hero empresa">
               <div className="container">
                 <div className="hero-header">
                   <div className="hero-title">
+                    <h1>Bem-vindo ao IDev</h1>
+                    <p>Conecte-se com os melhores profissionais de TI</p>
                   </div>
                 </div>
-                <div className="search-bar">
-                  <span className="search-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
-                      <circle cx="11" cy="11" r="8"/>
-                      <path d="M21 21l-4.35-4.35"/>
+                
+                <div className="filtros-container">
+                  <button 
+                    className="filtros-toggle"
+                    onClick={() => setMostrarFiltros(!mostrarFiltros)}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
                     </svg>
-                  </span>
-                  <input type="text" placeholder="Encontre talentos, tecnologias ou projetos..." />
+                    Filtros
+                  </button>
                 </div>
+
+
               </div>
+              
+              {mostrarFiltros && (
+                <div className="filtros-overlay" onClick={(e) => e.target === e.currentTarget && setMostrarFiltros(false)}>
+                  <div className="filtros-modal">
+                    <div className="filtros-header">
+                      <h4>Filtrar Profissionais</h4>
+                      <button 
+                        className="fechar-btn"
+                        onClick={() => setMostrarFiltros(false)}
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="18" y1="6" x2="6" y2="18"/>
+                          <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="form-group">
+                      <label>Habilidade:</label>
+                      <select 
+                        value={filtroSelecionado} 
+                        onChange={(e) => setFiltroSelecionado(e.target.value)}
+                      >
+                        <option value="">Todas as habilidades</option>
+                        {habilidades.map(habilidade => (
+                          <option key={habilidade} value={habilidade}>{habilidade}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <button 
+                      className="buscar-btn"
+                      onClick={() => setMostrarFiltros(false)}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                      </svg>
+                      Buscar
+                    </button>
+                  </div>
+                </div>
+              )}
             </section>
 
-            <section className="categories client">
+            <section className="categories empresa">
               <div className="container">
                 <h2>Encontre Profissionais por Categoria</h2>
                 <div className="category-cards">

@@ -15,7 +15,6 @@
   align-items: center;
   padding: 0 2rem;
   height: 70px;
-  position: relative;
 }
 
 .home-logo {
@@ -25,8 +24,6 @@
   transition: transform 0.2s ease;
   text-decoration: none;
   cursor: pointer;
-  position: absolute;
-  left: 5px;
 }
 
 .home-logo:hover {
@@ -55,8 +52,6 @@
   font-size: 1rem;
   font-weight: 600;
   white-space: nowrap;
-  position: absolute;
-  right: 5px;
 }
 
 .home-login-btn:hover {
@@ -73,16 +68,11 @@
   .home-login-btn {
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
-    right: 5px;
   }
 }
 
 @media (max-width: 480px) {
   .home-logo-text {
     font-size: 1.25rem;
-  }
-  
-  .home-login-btn {
-    right: 5px;
   }
 }
