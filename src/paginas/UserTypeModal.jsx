@@ -64,7 +64,7 @@ function UserTypeModal({ mostrar, fechar, onSelect, showLogin }) {
 
         <div className="buttons-container">
           <button
-            onClick={() => handleSelect('cliente')}
+            onClick={() => handleSelect('empresa')}
             className="user-type-button client"
           >
             <div className="button-icon">
@@ -73,7 +73,7 @@ function UserTypeModal({ mostrar, fechar, onSelect, showLogin }) {
                 <circle cx="12" cy="7" r="4"/>
               </svg>
             </div>
-            <div className="button-title">Sou Cliente</div>
+            <div className="button-title">Sou Empresa</div>
             <div className="button-description">
               Preciso contratar profissionais
             </div>

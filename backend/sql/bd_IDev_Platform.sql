@@ -57,13 +57,13 @@ CREATE TABLE REQUEST(
 GO
 
 -- Inserir usuários
-INSERT INTO USUARIO VALUES ('Samuel Nascimento', 'samuel@email.com', 'senha123', 'profissional', '(11) 99999-9999', '/assets/gato-de-terno-suit-cat.png', 'Desenvolvedor Full Stack especializado em React e Node.js', 'https://github.com/samuel', 1)
+INSERT INTO USUARIO VALUES ('Samuel Nascimento', 'samuel@email.com', 'senha123', 'profissional', '(11) 99999-9999', '/assets/gato-de-terno-suit-cat.png', 'Desenvolvedor Full Stack especializado em React e Node.js', 'https://github.com/samuel', 0)
 GO
-INSERT INTO USUARIO VALUES ('Carlos Mendes', 'carlos@email.com', 'senha123', 'profissional', '(21) 88888-8888', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', 'Engenheiro DevOps especializado em AWS e Docker', 'https://github.com/carlos', 1)
+INSERT INTO USUARIO VALUES ('Carlos Mendes', 'carlos@email.com', 'senha123', 'profissional', '(21) 88888-8888', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', 'Engenheiro DevOps especializado em AWS e Docker', 'https://github.com/carlos', 0)
 GO
 INSERT INTO USUARIO VALUES ('TechStart Ltda', 'ana@techstart.com', 'senha123', 'empresa', '(11) 55555-5555', NULL, NULL, NULL, 1)
 GO
-INSERT INTO USUARIO VALUES ('Inovação Digital SA', 'joao@inovacao.com', 'senha123', 'empresa', '(21) 44444-4444', NULL, NULL, NULL, 1)
+INSERT INTO USUARIO VALUES ('Inovação Digital SA', 'joao@inovacao.com', 'senha123', 'empresa', '(21) 44444-4444', NULL, NULL, NULL, 0)
 GO
 
 -- Inserir projetos
@@ -83,3 +83,5 @@ INSERT INTO REQUEST VALUES (1004, 'sugestao', 'Seria interessante ter notificaç
 GO
 INSERT INTO REQUEST VALUES (1002, 'reclamacao', 'O sistema está lento para carregar os projetos', 'media', NULL, GETDATE(), 1)
 GO
+
+SELECT * FROM USUARIO

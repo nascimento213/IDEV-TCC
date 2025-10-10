@@ -9,6 +9,7 @@ import PerfilProfissional from './paginas/PerfilProfissional'
 import DashboardProfissional from './paginas/DashboardProfissional'
 import RequestForm from './paginas/RequestForm'
 import RequestList from './paginas/RequestList'
+import Admin from './paginas/Admin'
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/request-form" element={<RequestForm />} />
         <Route path="/requests" element={<RequestList />} />
         <Route path="/about" element={<About />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </AuthProvider>
   );

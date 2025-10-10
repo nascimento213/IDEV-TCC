@@ -8,7 +8,8 @@ function Cadastro() {
     nome: '',
     email: '',
     senha: '',
-    confirmarSenha: ''
+    confirmarSenha: '',
+    telefone: ''
   })
   const navigate = useNavigate()
 
@@ -19,14 +20,36 @@ function Cadastro() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (formData.senha !== formData.confirmarSenha) {
       alert('As senhas não coincidem')
       return
     }
-    console.log('Cadastro:', formData)
-    navigate('/dashboard')
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/usuario/cadastro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: formData.nome,
+          email: formData.email,
+          senha: formData.senha,
+          tipo: 'profissional',
+          telefone: formData.telefone
+        })
+      })
+      
+      if (response.ok) {
+        alert('Usuário cadastrado com sucesso!')
+        navigate('/')
+      } else {
+        alert('Erro ao cadastrar usuário')
+      }
+    } catch (error) {
+      console.error('Erro:', error)
+      alert('Erro ao conectar com o servidor')
+    }
   }
 
   return (
@@ -217,6 +240,43 @@ function Cadastro() {
                   e.target.style.boxShadow = 'none'
                 }}
                 placeholder="••••••••"
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Telefone
+              </label>
+              <input
+                type="tel"
+                name="telefone"
+                value={formData.telefone}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  transition: 'all 0.2s ease'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#3b82f6'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db'
+                  e.target.style.boxShadow = 'none'
+                }}
+                placeholder="(11) 99999-9999"
               />
             </div>
 

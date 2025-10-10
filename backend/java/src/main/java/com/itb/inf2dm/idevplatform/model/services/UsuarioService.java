@@ -42,10 +42,12 @@ public class UsuarioService {
     public Usuario update(Long id, Usuario usuario) {
         Usuario usuarioExistente = findById(id);
         usuarioExistente.setNome(usuario.getNome());
+        usuarioExistente.setEmail(usuario.getEmail());
+        usuarioExistente.setTipo(usuario.getTipo());
         usuarioExistente.setTelefone(usuario.getTelefone());
-        usuarioExistente.setFotoPerfil(usuario.getFotoPerfil());
-        usuarioExistente.setBio(usuario.getBio());
-        usuarioExistente.setGithubUrl(usuario.getGithubUrl());
+        if (usuario.getFotoPerfil() != null) usuarioExistente.setFotoPerfil(usuario.getFotoPerfil());
+        if (usuario.getBio() != null) usuarioExistente.setBio(usuario.getBio());
+        if (usuario.getGithubUrl() != null) usuarioExistente.setGithubUrl(usuario.getGithubUrl());
         return usuarioRepository.save(usuarioExistente);
     }
 

@@ -51,7 +51,7 @@ function CadastroHeader() {
           </span>
         </div>
         
-        <button 
+       {/* <button 
           onClick={entrarModoDesenvolvedor}
           style={{
             width: '40px',
@@ -79,7 +79,7 @@ function CadastroHeader() {
           }}
         >
           🚀
-        </button>
+        </button> /* Botão de modo desenvolvedor */}
       </div>
     </header>
   )

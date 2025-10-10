@@ -12,7 +12,7 @@ export const api = {
     return response.json();
   },
 
-  cadastro: async (nome, email, senha, tipo = 'cliente') => {
+  cadastro: async (nome, email, senha, tipo = 'empresa') => {
     const response = await fetch(`${API_BASE}/usuario/cadastro`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -23,6 +23,11 @@ export const api = {
 
   listarProfissionais: async () => {
     const response = await fetch(`${API_BASE}/usuario/profissionais`);
+    return response.json();
+  },
+
+  listarEmpresas: async () => {
+    const response = await fetch(`${API_BASE}/usuario/empresas`);
     return response.json();
   },
 
@@ -75,6 +80,37 @@ export const api = {
 
   contarRequests: async () => {
     const response = await fetch(`${API_BASE}/request/count`);
+    return response.json();
+  },
+
+  // Admin - CRUD completo
+  listarUsuarios: async () => {
+    const response = await fetch(`${API_BASE}/usuario`);
+    return response.json();
+  },
+
+  atualizarUsuario: async (id, usuario) => {
+    const response = await fetch(`${API_BASE}/usuario/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(usuario)
+    });
+    return response.json();
+  },
+
+  deletarUsuario: async (id) => {
+    const response = await fetch(`${API_BASE}/usuario/${id}`, {
+      method: 'DELETE'
+    });
+    return response.json();
+  },
+
+  criarUsuario: async (usuario) => {
+    const response = await fetch(`${API_BASE}/usuario/cadastro`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(usuario)
+    });
     return response.json();
   }
 };
