@@ -9,11 +9,11 @@ function HeaderProfissional({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
   const { isLoggedIn, user, logout, switchUserType } = useAuth()
   const navigate = useNavigate()
   
-  const userData = {
-    id: 1,
-    name: 'Samuel Nascimento',
-    avatar: '/src/assets/imagens/gato-de-terno-suit-cat.png'
-  }
+  const userData = user ? {
+    id: user.id,
+    name: user.nome,
+    avatar: user.fotoPerfil ? `http://localhost:8080${user.fotoPerfil}` : '/src/assets/imagens/gato-de-terno-suit-cat.png'
+  } : null
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -89,6 +89,7 @@ function HeaderProfissional({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
           >
             Agenda
           </button>
+
           <button
             onClick={() => handleNavigation('avaliacoes')}
             className={`nav-item ${secaoAtiva === 'avaliacoes' ? 'active' : ''}`}
@@ -105,12 +106,21 @@ function HeaderProfissional({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
               setShowProfileMenu(!showProfileMenu)
             }}
           >
-            <img src={userData.avatar} alt={userData.name} className="user-avatar" />
-            <span className="user-name">{userData.name}</span>
+            <img src={userData?.avatar} alt={userData?.name} className="user-avatar" />
+            <span className="user-name">{userData?.name || 'Usuário'}</span>
 
           </div>
           {showProfileMenu && (
             <div className="profile-menu">
+              <button 
+                onClick={() => {
+                  navigate(`/perfil/${userData?.id}`)
+                  setShowProfileMenu(false)
+                }}
+                className="menu-item"
+              >
+                Ver Perfil
+              </button>
               <button 
                 onClick={() => {
                   navigate('/perfil-profissional')
@@ -122,13 +132,12 @@ function HeaderProfissional({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
               </button>
               <button 
                 onClick={() => {
-                  switchUserType('cliente')
-                  navigate('/dashboard')
+                  navigate('/requests')
                   setShowProfileMenu(false)
                 }}
                 className="menu-item"
               >
-                Modo Cliente
+                Meus Requests
               </button>
               <button 
                 onClick={() => {

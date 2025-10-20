@@ -13,7 +13,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
+        return usuarioRepository.findAllAtivos();
     }
 
     public Usuario save(Usuario usuario) {
@@ -22,6 +22,15 @@ public class UsuarioService {
     }
 
     public Usuario findById(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o id: " + id));
+        if (!usuario.isCodStatus()) {
+            throw new RuntimeException("Usuário inativo com o id: " + id);
+        }
+        return usuario;
+    }
+    
+    public Usuario findByIdIncludeInactive(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o id: " + id));
     }
@@ -58,6 +67,13 @@ public class UsuarioService {
     public void delete(Long id) {
         Usuario usuario = findById(id);
         usuario.setCodStatus(false);
+        usuarioRepository.save(usuario);
+    }
+
+    public void reativar(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o id: " + id));
+        usuario.setCodStatus(true);
         usuarioRepository.save(usuario);
     }
 }

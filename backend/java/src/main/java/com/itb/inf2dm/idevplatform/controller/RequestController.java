@@ -25,9 +25,43 @@ public class RequestController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<Request>> listarRequestsDoUsuario(@PathVariable Long usuarioId) {
-        List<Request> requests = requestService.findByUsuarioId(usuarioId);
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<Object> listarRequestsDoUsuario(@PathVariable Long usuarioId) {
+        try {
+            List<Request> requests = requestService.findByUsuarioId(usuarioId);
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                Map.of(
+                    "status", 500,
+                    "error", "Internal Server Error",
+                    "message", "Erro ao buscar requests: " + e.getMessage()
+                )
+            );
+        }
+    }
+    
+    @GetMapping("/enviados/{usuarioId}")
+    public ResponseEntity<List<Request>> listarRequestsEnviados(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(requestService.findByRemetenteId(usuarioId));
+    }
+    
+    @GetMapping("/recebidos/{usuarioId}")
+    public ResponseEntity<List<Request>> listarRequestsRecebidos(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(requestService.findByDestinatarioId(usuarioId));
+    }
+    
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Object> atualizarStatusRequest(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            Request request = requestService.findById(id);
+            request.setStatus(body.get("status"));
+            requestService.save(request);
+            return ResponseEntity.ok(request);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(
+                Map.of("error", "Request não encontrado")
+            );
+        }
     }
 
     @GetMapping

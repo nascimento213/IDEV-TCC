@@ -19,4 +19,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     
     @Query("SELECT u FROM Usuario u WHERE u.tipo = 'empresa' AND u.codStatus = true")
     List<Usuario> findEmpresas();
+    
+    @Query("SELECT u FROM Usuario u WHERE u.codStatus = true")
+    List<Usuario> findAllAtivos();
 }

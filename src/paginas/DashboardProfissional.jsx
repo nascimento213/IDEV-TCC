@@ -5,58 +5,27 @@ import HeaderProfissional from '../componentes/HeaderProfissional'
 import PageTransition from '../componentes/PageTransition'
 import '../assets/css/DashboardProfissional.css'
 
-// Mock data simulando dados do banco - Perfil Profissional
-const mockProfessionalData = {
-  id: 1,
-  nome: 'Samuel Nascimento',
-  area: 'Desenvolvedor Full Stack',
-  foto: '/src/assets/imagens/gato-de-terno-suit-cat.png',
-  email: 'samuel@email.com',
-  telefone: '(11) 99999-9999',
-  localizacao: 'São Paulo, SP',
-  experiencia: '3 anos',
-  skills: ['React', 'Node.js', 'JavaScript', 'TypeScript', 'MongoDB'],
-  avaliacaoMedia: 4.8,
-  totalAvaliacoes: 24,
-  projetosCompletos: 18,
-  clientesAtivos: 5,
-  rendaMensal: 8500,
-  disponibilidade: 'Disponível',
-  servicosPrestados: [
-    { nome: 'Desenvolvimento Web', preco: 'R$ 80/h', demanda: 'Alta' },
-    { nome: 'Consultoria React', preco: 'R$ 120/h', demanda: 'Média' },
-    { nome: 'Code Review', preco: 'R$ 60/h', demanda: 'Baixa' }
-  ],
-  agendaProximos: [
-    { cliente: 'TechCorp', projeto: 'E-commerce', data: '2024-01-15', hora: '14:00' },
-    { cliente: 'StartupXYZ', projeto: 'Landing Page', data: '2024-01-16', hora: '10:00' }
-  ],
-  avaliacoesRecentes: [
-    { cliente: 'Maria Silva', nota: 5, comentario: 'Excelente trabalho!', projeto: 'App Mobile' },
-    { cliente: 'João Santos', nota: 4, comentario: 'Muito profissional', projeto: 'Website' }
-  ]
-}
 
-const mockNotifications = [
-  { id: 1, tipo: 'proposta', titulo: 'Nova proposta de projeto', descricao: 'E-commerce em React', valor: 'R$ 5.000', tempo: '2h' },
-  { id: 2, tipo: 'mensagem', titulo: 'Mensagem de cliente', descricao: 'Carlos Mendes enviou uma mensagem', tempo: '1d' },
-  { id: 3, tipo: 'avaliacao', titulo: 'Nova avaliação recebida', descricao: '5 estrelas no projeto Mobile App', tempo: '3d' }
-]
-
-const mockStats = [
-  { label: 'Projetos Completos', valor: '18', icone: 'projetos', cor: '#3b82f6' },
-  { label: 'Clientes Ativos', valor: '5', icone: 'clientes', cor: '#10b981' },
-  { label: 'Avaliação Média', valor: '4.8', icone: 'estrela', cor: '#f59e0b' },
-  { label: 'Renda Mensal', valor: 'R$ 8.5k', icone: 'dinheiro', cor: '#8b5cf6' }
-]
 
 function DashboardProfissional() {
   const navigate = useNavigate()
-  const { user, switchUserType } = useAuth()
+  const { user, switchUserType, isLoggedIn } = useAuth()
   const [secaoAtiva, setSecaoAtiva] = useState('inicio')
   const [dadosProfissional, setDadosProfissional] = useState(null)
   const [notificacoes, setNotificacoes] = useState([])
   const [estatisticas, setEstatisticas] = useState([])
+  const [projetosDisponiveis, setProjetosDisponiveis] = useState([])
+  const [meusProjetos, setMeusProjetos] = useState([])
+  
+  // Proteção de rota - apenas profissionais podem acessar
+  useEffect(() => {
+    const tipoUsuario = user?.tipo || user?.type
+    
+    if (isLoggedIn && user && tipoUsuario === 'empresa') {
+      alert('Não é possível acessar esta área! Este usuário não está cadastrado como profissional.')
+      navigate('/dashboard')
+    }
+  }, [isLoggedIn, user, navigate])
 
   const handleSetSecaoAtiva = (secao) => {
     setSecaoAtiva(secao)
@@ -65,17 +34,145 @@ function DashboardProfissional() {
     }
   }
 
-  // Simula busca de dados do banco
+  // Buscar dados reais do usuário logado
   useEffect(() => {
     const carregarDados = async () => {
-      // Simula delay de API
-      await new Promise(resolve => setTimeout(resolve, 500))
-      setDadosProfissional(mockProfessionalData)
-      setNotificacoes(mockNotifications)
-      setEstatisticas(mockStats)
+      if (user) {
+        setDadosProfissional({
+          id: user.id,
+          nome: user.nome,
+          area: user.bio || 'Profissional de TI',
+          foto: user.fotoPerfil ? `http://localhost:8080${user.fotoPerfil}` : '/src/assets/imagens/gato-de-terno-suit-cat.png',
+          email: user.email,
+          telefone: user.telefone || 'Não informado',
+          localizacao: 'Brasil',
+          disponibilidade: 'Disponível'
+        })
+        
+        // Carregar estatísticas reais
+        try {
+          const projetosResponse = await fetch(`http://localhost:8080/api/v1/projeto/profissional/${user.id}`)
+          if (projetosResponse.ok) {
+            const projetos = await projetosResponse.json()
+            const projetosCompletos = projetos.filter(p => p.status === 'FINALIZADO').length
+            const projetosAtivos = projetos.filter(p => p.status === 'EM_ANDAMENTO').length
+            
+            setEstatisticas([
+              { label: 'Projetos Completos', valor: projetosCompletos.toString(), icone: 'projetos', cor: '#3b82f6' },
+              { label: 'Projetos Ativos', valor: projetosAtivos.toString(), icone: 'clientes', cor: '#10b981' },
+              { label: 'Avaliação Média', valor: '4.8', icone: 'estrela', cor: '#f59e0b' },
+              { label: 'Total Projetos', valor: projetos.length.toString(), icone: 'dinheiro', cor: '#8b5cf6' }
+            ])
+          }
+        } catch (error) {
+          console.error('Erro ao carregar estatísticas:', error)
+        }
+        
+        // Carregar notificações reais (requests + mensagens)
+        try {
+          const notificacoesArray = []
+          
+          // Buscar requests
+          const requestsResponse = await fetch(`http://localhost:8080/api/v1/request/recebidos/${user.id}`)
+          if (requestsResponse.ok) {
+            const requests = await requestsResponse.json()
+            requests.forEach(req => {
+              notificacoesArray.push({
+                id: `req_${req.id}`,
+                tipo: req.categoria,
+                titulo: `${req.categoria} recebida`,
+                descricao: req.mensagem.substring(0, 50) + '...',
+                tempo: new Date(req.dataEnvio).toLocaleDateString()
+              })
+            })
+          }
+          
+          // Buscar mensagens
+          const mensagensResponse = await fetch(`http://localhost:8080/api/v1/mensagem/recebidas/${user.id}`)
+          if (mensagensResponse.ok) {
+            const mensagens = await mensagensResponse.json()
+            for (const msg of mensagens) {
+              // Buscar dados do remetente
+              let nomeRemetente = 'Usuário'
+              try {
+                const remetenteResponse = await fetch(`http://localhost:8080/api/v1/usuario/${msg.remetenteId}`)
+                if (remetenteResponse.ok) {
+                  const remetente = await remetenteResponse.json()
+                  nomeRemetente = remetente.nome
+                }
+              } catch (error) {
+                console.error('Erro ao buscar remetente:', error)
+              }
+              
+              notificacoesArray.push({
+                id: `msg_${msg.id}`,
+                tipo: 'mensagem',
+                titulo: `Mensagem de ${nomeRemetente}`,
+                descricao: msg.mensagem.substring(0, 50) + '...',
+                tempo: new Date(msg.dataEnvio).toLocaleDateString(),
+                remetenteId: msg.remetenteId
+              })
+            }
+          }
+          
+          // Ordenar por data e pegar apenas as 3 mais recentes
+          setNotificacoes(notificacoesArray.slice(0, 3))
+        } catch (error) {
+          console.error('Erro ao carregar notificações:', error)
+        }
+        
+        // Carregar projetos disponíveis (apenas para profissionais)
+        if (user.tipo === 'profissional') {
+          try {
+            const projetosAbertosResponse = await fetch('http://localhost:8080/api/v1/projeto/abertos')
+            if (projetosAbertosResponse.ok) {
+              const projetos = await projetosAbertosResponse.json()
+              setProjetosDisponiveis(projetos)
+            }
+          } catch (error) {
+            console.error('Erro ao carregar projetos disponíveis:', error)
+          }
+        }
+        
+        // Carregar meus projetos
+        try {
+          const meusProjetosResponse = await fetch(`http://localhost:8080/api/v1/projeto/profissional/${user.id}`)
+          if (meusProjetosResponse.ok) {
+            const projetos = await meusProjetosResponse.json()
+            setMeusProjetos(projetos)
+          }
+        } catch (error) {
+          console.error('Erro ao carregar meus projetos:', error)
+        }
+      }
     }
     carregarDados()
-  }, [])
+  }, [user])
+
+  const candidatarSeProjeto = async (projetoId) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/candidatura', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projetoId: projetoId,
+          profissionalId: user.id
+        })
+      })
+      
+      if (response.ok) {
+        alert('Candidatura enviada com sucesso!')
+        // Recarregar projetos para atualizar a lista
+        window.location.reload()
+      } else {
+        const error = await response.json()
+        alert(error.message || 'Erro ao enviar candidatura')
+      }
+    } catch (error) {
+      console.error('Erro ao candidatar-se:', error)
+      alert('Erro ao enviar candidatura')
+    }
+  }
 
   const getIcone = (tipo) => {
     const icones = {
@@ -136,26 +233,25 @@ function DashboardProfissional() {
               </div>
 
               <div className="dashboard-grid professional">
-                {/* Serviços Prestados */}
+                {/* Informações do Profissional */}
                 <div className="services-card">
                   <div className="card-header">
-                    <h3>Meus Serviços</h3>
+                    <h3>Informações</h3>
                   </div>
                   
                   <div className="services-list">
-                    {dadosProfissional.servicosPrestados.map((servico, index) => (
-                      <div key={index} className="service-item">
-                        <div className="service-info">
-                          <h4>{servico.nome}</h4>
-                          <p className="service-price">{servico.preco}</p>
-                        </div>
-                        <div className="service-demand">
-                          <span className={`demand-badge ${servico.demanda.toLowerCase()}`}>
-                            {servico.demanda}
-                          </span>
-                        </div>
+                    <div className="service-item">
+                      <div className="service-info">
+                        <h4>Email</h4>
+                        <p className="service-price">{dadosProfissional.email}</p>
                       </div>
-                    ))}
+                    </div>
+                    <div className="service-item">
+                      <div className="service-info">
+                        <h4>Telefone</h4>
+                        <p className="service-price">{dadosProfissional.telefone}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -171,8 +267,11 @@ function DashboardProfissional() {
                   </div>
                   
                   <div className="profile-actions">
-                    <button className="action-btn primary" style={{ width: '100%' }} onClick={() => navigate('/perfil-profissional')}>
+                    <button className="action-btn primary" style={{ width: '100%', marginBottom: '0.5rem' }} onClick={() => navigate('/perfil-profissional')}>
                       Editar Perfil
+                    </button>
+                    <button className="action-btn secondary" style={{ width: '100%' }} onClick={() => navigate('/request-form')}>
+                      Enviar Request
                     </button>
                   </div>
                 </div>
@@ -191,7 +290,26 @@ function DashboardProfissional() {
                       <p>{notif.descricao}</p>
                       {notif.valor && <span className="notification-value">{notif.valor}</span>}
                     </div>
-                    <span className="notification-time">{notif.tempo}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      {notif.tipo === 'mensagem' && notif.remetenteId && (
+                        <button
+                          onClick={() => navigate(`/contato-form?destinatario=${notif.remetenteId}`)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Responder
+                        </button>
+                      )}
+                      <span className="notification-time">{notif.tempo}</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -200,51 +318,84 @@ function DashboardProfissional() {
 
           {secaoAtiva === 'agenda' && (
             <div className="section-content">
-              <h2>Agenda - Próximos Compromissos</h2>
-              <div className="agenda-list">
-                {dadosProfissional.agendaProximos.map((item, index) => (
-                  <div key={index} className="agenda-item">
-                    <div className="agenda-date">
-                      <span className="date">{new Date(item.data).getDate()}</span>
-                      <span className="month">{new Date(item.data).toLocaleDateString('pt-BR', { month: 'short' })}</span>
+              <h2>Agenda & Projetos</h2>
+              
+              <div style={{ marginBottom: '3rem' }}>
+                <h3>Projetos Disponíveis</h3>
+                <div className="projects-grid">
+                  {projetosDisponiveis.map(projeto => (
+                    <div key={projeto.id} className="project-card">
+                      <h4>{projeto.titulo}</h4>
+                      <p>{projeto.descricao}</p>
+                      <div className="project-footer">
+                        <span className="project-status aberto">Aberto</span>
+                        <button 
+                          className="btn-apply"
+                          onClick={() => candidatarSeProjeto(projeto.id)}
+                        >
+                          Candidatar-se
+                        </button>
+                      </div>
                     </div>
-                    <div className="agenda-info">
-                      <h4>{item.projeto}</h4>
-                      <p>Cliente: {item.cliente}</p>
-                      <span className="agenda-time">{item.hora}</span>
+                  ))}
+                  {projetosDisponiveis.length === 0 && (
+                    <p style={{ textAlign: 'center', color: '#6b7280', padding: '2rem' }}>
+                      Nenhum projeto disponível no momento
+                    </p>
+                  )}
+                </div>
+              </div>
+              
+              <div style={{ marginBottom: '3rem' }}>
+                <h3>Meus Projetos</h3>
+                <div className="projects-grid">
+                  {meusProjetos.map(projeto => (
+                    <div key={projeto.id} className="project-card">
+                      <h4>{projeto.titulo}</h4>
+                      <p>{projeto.descricao}</p>
+                      <div className="project-footer">
+                        <span className={`project-status ${projeto.status.toLowerCase()}`}>
+                          {projeto.status}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                  {meusProjetos.length === 0 && (
+                    <p style={{ textAlign: 'center', color: '#6b7280', padding: '2rem' }}>
+                      Você ainda não possui projetos
+                    </p>
+                  )}
+                </div>
+              </div>
+              
+              <div>
+                <h3>Próximos Compromissos</h3>
+                <div className="agenda-list">
+                  <p style={{ textAlign: 'center', color: '#6b7280', padding: '2rem' }}>
+                    Nenhum compromisso agendado
+                  </p>
+                </div>
               </div>
             </div>
           )}
+
+
 
           {secaoAtiva === 'avaliacoes' && (
             <div className="section-content">
               <h2>Avaliações Recentes</h2>
               <div className="rating-summary">
-                <span className="rating-number">{dadosProfissional.avaliacaoMedia}</span>
+                <span className="rating-number">4.8</span>
                 <div className="stars">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className={`star ${i < Math.floor(dadosProfissional.avaliacaoMedia) ? 'filled' : ''}`}>★</span>
+                    <span key={i} className={`star ${i < 4 ? 'filled' : ''}`}>★</span>
                   ))}
                 </div>
               </div>
               <div className="reviews-list">
-                {dadosProfissional.avaliacoesRecentes.map((avaliacao, index) => (
-                  <div key={index} className="review-item">
-                    <div className="review-header">
-                      <span className="client-name">{avaliacao.cliente}</span>
-                      <div className="review-rating">
-                        {[...Array(5)].map((_, i) => (
-                          <span key={i} className={`star ${i < avaliacao.nota ? 'filled' : ''}`}>★</span>
-                        ))}
-                      </div>
-                    </div>
-                    <p className="review-comment">{avaliacao.comentario}</p>
-                    <span className="review-project">Projeto: {avaliacao.projeto}</span>
-                  </div>
-                ))}
+                <p style={{ textAlign: 'center', color: '#6b7280', padding: '2rem' }}>
+                  Nenhuma avaliação ainda
+                </p>
               </div>
             </div>
           )}

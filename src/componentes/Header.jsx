@@ -9,17 +9,17 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
   const { isLoggedIn, user, logout, login, switchUserType } = useAuth()
   const navigate = useNavigate()
   
-  const userData = {
-    id: 1,
-    name: 'Samuel Nascimento',
-    avatar: null
-  }
+  // Usar dados reais do usuário logado
+  const userData = user ? {
+    id: user.id,
+    name: user.nome,
+    avatar: user.fotoPerfil ? `http://localhost:8080${user.fotoPerfil}` : null
+  } : null
   
   const itensMenu = [
     { id: 'inicio', label: 'Início' },
     { id: 'profissionais', label: 'Profissionais' },
-    { id: 'projetos', label: 'Projetos' },
-    { id: 'sobre', label: 'Sobre' }
+    { id: 'projetos', label: 'Projetos' }
   ]
 
   useEffect(() => {
@@ -123,7 +123,7 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
                 setShowProfileMenu(!showProfileMenu)
               }}
             >
-              {userData.avatar ? (
+              {userData?.avatar ? (
                 <img src={userData.avatar} alt={userData.name} className="user-avatar" />
               ) : (
                 <div className="user-avatar-placeholder">
@@ -133,13 +133,13 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
                   </svg>
                 </div>
               )}
-              <span className="user-name">{userData.name}</span>
+              <span className="user-name">{userData?.name || 'Usuário'}</span>
             </div>
             {showProfileMenu && (
               <div className="profile-menu">
                 <button 
                   onClick={() => {
-                    navigate(`/perfil/${userData.id}`)
+                    navigate(`/perfil/${userData?.id}`)
                     setShowProfileMenu(false)
                   }}
                   className="menu-item"
@@ -155,30 +155,18 @@ function Header({ secaoAtiva, setSecaoAtiva, aoClicarLogin }) {
                 >
                   Meus Requests
                 </button>
-                {user?.type === 'empresa' && (
+                {user?.tipo === 'empresa' && (
                   <button 
                     onClick={() => {
-                      switchUserType('profissional')
-                      navigate('/dashboard-profissional')
+                      navigate('/criar-projeto')
                       setShowProfileMenu(false)
                     }}
                     className="menu-item"
                   >
-                    Modo Profissional
+                    Criar Projeto
                   </button>
                 )}
-                {user?.type === 'profissional' && (
-                  <button 
-                    onClick={() => {
-                      switchUserType('empresa')
-                      navigate('/dashboard')
-                      setShowProfileMenu(false)
-                    }}
-                    className="menu-item"
-                  >
-                    Modo Empresa
-                  </button>
-                )}
+
                 <button 
                   onClick={() => {
                     logout()

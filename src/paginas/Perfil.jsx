@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import Header from '../componentes/Header'
 import PageTransition from '../componentes/PageTransition'
 import pfp from '../assets/imagens/gato-de-terno-suit-cat.png';
@@ -39,32 +40,110 @@ const mockUsers = [
 function Perfil() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [usuario, setUsuario] = useState(null)
   const [carregando, setCarregando] = useState(true)
   const [secaoAtiva, setSecaoAtiva] = useState('perfil')
+  const [novaBio, setNovaBio] = useState('')
+  const [editandoFoto, setEditandoFoto] = useState(false)
+  const [podeEditar, setPodeEditar] = useState(false)
 
   const handleSetSecaoAtiva = (secao) => {
     setSecaoAtiva(secao)
     if (secao === 'inicio') {
-      navigate('/dashboard')
-      setTimeout(() => {
-        const event = new CustomEvent('setDashboardSection', { detail: 'inicio' })
-        window.dispatchEvent(event)
-      }, 50)
+      if (user?.tipo === 'profissional') {
+        navigate('/dashboard-profissional')
+      } else {
+        navigate('/dashboard')
+        setTimeout(() => {
+          const event = new CustomEvent('setDashboardSection', { detail: 'inicio' })
+          window.dispatchEvent(event)
+        }, 50)
+      }
     } else if (secao !== 'perfil') {
-      navigate('/dashboard')
+      if (user?.tipo === 'profissional') {
+        navigate('/dashboard-profissional')
+      } else {
+        navigate('/dashboard')
+      }
     }
   }
 
-  // Mock function to simulate API call
+  // Buscar usuário da API
   const buscarUsuario = async (userId) => {
     setCarregando(true)
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    const usuarioEncontrado = mockUsers.find(user => user.id === userId)
-    setUsuario(usuarioEncontrado || null)
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/usuario/${userId}`)
+      if (response.ok) {
+        const usuarioData = await response.json()
+        const bioTexto = usuarioData.bio || ''
+        setUsuario({
+          id: usuarioData.id,
+          nome: usuarioData.nome,
+          email: usuarioData.email,
+          bio: bioTexto,
+          foto: usuarioData.fotoPerfil || pfp,
+          tipo: usuarioData.tipo
+        })
+        setNovaBio(bioTexto)
+        setPodeEditar(user && user.id == usuarioData.id)
+      } else {
+        setUsuario(null)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar usuário:', error)
+      setUsuario(null)
+    }
     setCarregando(false)
+  }
+
+  const salvarBio = async () => {
+    if (novaBio === usuario.bio) return
+    
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/usuario/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: usuario.nome,
+          email: usuario.email,
+          bio: novaBio,
+          tipo: usuario.tipo || 'profissional'
+        })
+      })
+      
+      if (response.ok) {
+        setUsuario({ ...usuario, bio: novaBio })
+      }
+    } catch (error) {
+      console.error('Erro ao salvar bio:', error)
+    }
+  }
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      const formData = new FormData()
+      formData.append('foto', file)
+      
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/usuario/${id}/upload-foto`, {
+          method: 'POST',
+          body: formData
+        })
+        
+        if (response.ok) {
+          const result = await response.json()
+          setUsuario({ ...usuario, foto: `http://localhost:8080${result.fotoUrl}` })
+          setEditandoFoto(false)
+          alert('Foto atualizada com sucesso!')
+        } else {
+          alert('Erro ao fazer upload da foto')
+        }
+      } catch (error) {
+        alert('Erro ao fazer upload da foto')
+      }
+    }
   }
 
   useEffect(() => {
@@ -100,7 +179,7 @@ function Perfil() {
             <p>Carregando perfil...</p>
           </div>
         </main>
-        <style jsx>{`
+        <style>{`
           @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -212,17 +291,52 @@ function Perfil() {
               gap: '2rem',
               marginBottom: '2rem'
             }}>
-              <img
-                src={usuario.foto}
-                alt={usuario.nome}
-                style={{
-                  width: '120px',
-                  height: '120px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  border: '4px solid #e5e7eb'
-                }}
-              />
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={usuario.foto}
+                  alt={usuario.nome}
+                  style={{
+                    width: '120px',
+                    height: '120px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '4px solid #e5e7eb'
+                  }}
+                />
+                {podeEditar && (
+                  <button
+                    onClick={() => setEditandoFoto(true)}
+                    style={{
+                      position: 'absolute',
+                      bottom: '0',
+                      right: '0',
+                      background: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '32px',
+                      height: '32px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                      <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                  </button>
+                )}
+                {editandoFoto && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    style={{ position: 'absolute', opacity: 0, top: 0, left: 0, width: '100%', height: '100%', cursor: 'pointer' }}
+                  />
+                )}
+              </div>
               <div>
                 <h1 style={{
                   fontSize: '2rem',
@@ -264,13 +378,42 @@ function Perfil() {
               }}>
                 Sobre
               </h2>
-              <p style={{
-                color: '#6b7280',
-                lineHeight: '1.6',
-                margin: 0
-              }}>
-                {usuario.bio}
-              </p>
+              {podeEditar ? (
+                <textarea
+                  value={novaBio}
+                  onChange={(e) => setNovaBio(e.target.value)}
+                  placeholder="Conte um pouco sobre você..."
+                  style={{
+                    width: '100%',
+                    minHeight: '100px',
+                    padding: '0.75rem',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    resize: 'vertical',
+                    fontFamily: 'inherit',
+                    fontSize: '1rem',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#d1d5db'
+                    salvarBio()
+                  }}
+                />
+              ) : (
+                <p style={{
+                  color: '#6b7280',
+                  lineHeight: '1.6',
+                  margin: 0,
+                  padding: '0.75rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  backgroundColor: '#f9fafb'
+                }}>
+                  {usuario.bio || 'Sem biografia cadastrada'}
+                </p>
+              )}
             </div>
           </div>
 
@@ -301,15 +444,33 @@ function Perfil() {
                   </svg>
                   {usuario.email}
                 </p>
-                <p style={{ margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                  </svg>
-                  ID: {usuario.id}
-                </p>
+                {user?.tipo === 'empresa' && usuario.tipo === 'profissional' && (
+                  <button
+                    onClick={() => navigate(`/contato-form?destinatario=${usuario.id}`)}
+                    style={{
+                      marginTop: '0.75rem',
+                      padding: '0.5rem 1rem',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = '#2563eb'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = '#3b82f6'}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Enviar Mensagem
+                  </button>
+                )}
               </div>
             </div>
 
@@ -335,11 +496,11 @@ function Perfil() {
 
                 <button
                   onClick={() => {
-                    navigate('/dashboard')
-                    setTimeout(() => {
-                      const event = new CustomEvent('setDashboardSection', { detail: 'inicio' })
-                      window.dispatchEvent(event)
-                    }, 50)
+                    if (user?.tipo === 'profissional') {
+                      navigate('/dashboard-profissional')
+                    } else {
+                      handleSetSecaoAtiva('inicio')
+                    }
                   }}
                   style={{
                     padding: '0.75rem 1rem',

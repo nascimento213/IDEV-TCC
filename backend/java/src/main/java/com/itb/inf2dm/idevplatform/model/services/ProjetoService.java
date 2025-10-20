@@ -45,9 +45,18 @@ public class ProjetoService {
         projetoExistente.setOrcamentoMin(projeto.getOrcamentoMin());
         projetoExistente.setOrcamentoMax(projeto.getOrcamentoMax());
         projetoExistente.setStatus(projeto.getStatus());
-        projetoExistente.setImagemUrl(projeto.getImagemUrl());
+
         projetoExistente.setProfissionalId(projeto.getProfissionalId());
         return projetoRepository.save(projetoExistente);
+    }
+
+
+
+    public Projeto removerProfissional(Long projetoId) {
+        Projeto projeto = findById(projetoId);
+        projeto.setProfissionalId(null);
+        projeto.setStatus("ABERTO");
+        return projetoRepository.save(projeto);
     }
 
     public void delete(Long id) {

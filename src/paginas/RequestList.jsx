@@ -9,19 +9,70 @@ import { api } from '../services/api'
 function RequestList() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const [requests, setRequests] = useState([])
+  const [requests, setRequests] = useState(null)
   const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
-    carregarRequests()
+    carregarRequestsEMensagens()
   }, [])
 
-  const carregarRequests = async () => {
+  const carregarRequestsEMensagens = async () => {
     try {
-      const data = await api.listarRequestsDoUsuario(user.id)
-      setRequests(data)
+      const todasMensagens = []
+      
+      // Carregar requests
+      const requestsResponse = await fetch(`http://localhost:8080/api/v1/request/usuario/${user.id}`)
+      if (requestsResponse.ok) {
+        const requestsData = await requestsResponse.json()
+        if (Array.isArray(requestsData)) {
+          requestsData.forEach(req => {
+            todasMensagens.push({
+              ...req,
+              tipo: 'request',
+              titulo: `${req.categoria} - Request`
+            })
+          })
+        }
+      }
+      
+      // Carregar mensagens enviadas
+      const mensagensEnviadasResponse = await fetch(`http://localhost:8080/api/v1/mensagem/enviadas/${user.id}`)
+      if (mensagensEnviadasResponse.ok) {
+        const mensagensEnviadas = await mensagensEnviadasResponse.json()
+        if (Array.isArray(mensagensEnviadas)) {
+          mensagensEnviadas.forEach(msg => {
+            todasMensagens.push({
+              ...msg,
+              tipo: 'mensagem_enviada',
+              categoria: 'mensagem',
+              titulo: msg.assunto || 'Mensagem enviada'
+            })
+          })
+        }
+      }
+      
+      // Carregar mensagens recebidas
+      const mensagensRecebidasResponse = await fetch(`http://localhost:8080/api/v1/mensagem/recebidas/${user.id}`)
+      if (mensagensRecebidasResponse.ok) {
+        const mensagensRecebidas = await mensagensRecebidasResponse.json()
+        if (Array.isArray(mensagensRecebidas)) {
+          mensagensRecebidas.forEach(msg => {
+            todasMensagens.push({
+              ...msg,
+              tipo: 'mensagem_recebida',
+              categoria: 'mensagem',
+              titulo: msg.assunto || 'Mensagem recebida'
+            })
+          })
+        }
+      }
+      
+      // Ordenar por data
+      todasMensagens.sort((a, b) => new Date(b.dataEnvio) - new Date(a.dataEnvio))
+      setRequests(todasMensagens)
     } catch (error) {
-      console.error('Erro ao carregar requests:', error)
+      console.error('Erro ao carregar mensagens:', error)
+      setRequests([])
     } finally {
       setCarregando(false)
     }
@@ -44,17 +95,16 @@ function RequestList() {
     return new Date(dataString).toLocaleString('pt-BR')
   }
 
-  const getCorPrioridade = (prioridade) => {
-    switch (prioridade) {
-      case 'alta': return '#ef4444'
-      case 'media': return '#f59e0b'
-      case 'baixa': return '#10b981'
+  const getCorCategoria = (categoria, tipo) => {
+    if (categoria === 'mensagem') {
+      return tipo === 'mensagem_enviada' ? '#3b82f6' : '#8b5cf6'
+    }
+    switch (categoria) {
+      case 'reclamacao': return '#ef4444'
+      case 'sugestao': return '#f59e0b'
+      case 'elogio': return '#10b981'
       default: return '#6b7280'
     }
-  }
-
-  const getCorCategoria = (categoria) => {
-    return categoria === 'sugestao' ? '#3b82f6' : '#f59e0b'
   }
 
   if (carregando) {
@@ -98,7 +148,7 @@ function RequestList() {
               color: '#111827',
               margin: 0
             }}>
-              Meus Requests
+              Minhas Mensagens
             </h1>
             <button
               onClick={() => navigate('/request-form')}
@@ -113,11 +163,11 @@ function RequestList() {
                 cursor: 'pointer'
               }}
             >
-              + Novo Request
+              + Nova Mensagem
             </button>
           </div>
 
-          {requests.length === 0 ? (
+          {!requests || requests.length === 0 ? (
             <div style={{
               background: '#ffffff',
               borderRadius: '16px',
@@ -126,7 +176,7 @@ function RequestList() {
               boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)'
             }}>
               <p style={{ color: '#6b7280', fontSize: '1.1rem' }}>
-                Você ainda não enviou nenhum request.
+                Você ainda não tem nenhuma mensagem.
               </p>
               <button
                 onClick={() => navigate('/request-form')}
@@ -142,18 +192,18 @@ function RequestList() {
                   cursor: 'pointer'
                 }}
               >
-                Enviar Primeiro Request
+                Enviar Primeira Mensagem
               </button>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {requests.map(request => (
-                <div key={request.id} style={{
+              {requests && requests.map(request => (
+                <div key={`${request.tipo}_${request.id}`} style={{
                   background: '#ffffff',
                   borderRadius: '12px',
                   padding: '1.5rem',
                   boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
-                  border: `3px solid ${getCorCategoria(request.categoria)}`
+                  border: `3px solid ${getCorCategoria(request.categoria, request.tipo)}`
                 }}>
                   <div style={{
                     display: 'flex',
@@ -164,45 +214,63 @@ function RequestList() {
                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                       <span style={{
                         padding: '0.25rem 0.75rem',
-                        backgroundColor: getCorCategoria(request.categoria),
+                        backgroundColor: getCorCategoria(request.categoria, request.tipo),
                         color: 'white',
                         borderRadius: '20px',
                         fontSize: '0.8rem',
                         fontWeight: '600',
                         textTransform: 'capitalize'
                       }}>
-                        {request.categoria}
+                        {request.tipo === 'mensagem_enviada' ? 'Enviada' : 
+                         request.tipo === 'mensagem_recebida' ? 'Recebida' : 
+                         request.categoria}
                       </span>
-                      {request.prioridade && (
-                        <span style={{
-                          padding: '0.25rem 0.75rem',
-                          backgroundColor: getCorPrioridade(request.prioridade),
-                          color: 'white',
-                          borderRadius: '20px',
-                          fontSize: '0.8rem',
-                          fontWeight: '600',
-                          textTransform: 'capitalize'
-                        }}>
-                          {request.prioridade}
-                        </span>
+                      <h3 style={{
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        color: '#111827',
+                        margin: 0
+                      }}>
+                        {request.titulo}
+                      </h3>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      {request.tipo === 'mensagem_recebida' && (
+                        <button
+                          onClick={() => navigate(`/contato-form?destinatario=${request.remetenteId}`)}
+                          style={{
+                            background: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.8rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Responder
+                        </button>
+                      )}
+                      {request.tipo === 'request' && (
+                        <button
+                          onClick={() => deletarRequest(request.id)}
+                          style={{
+                            background: '#ef4444',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.8rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Excluir
+                        </button>
                       )}
                     </div>
-                    <button
-                      onClick={() => deletarRequest(request.id)}
-                      style={{
-                        background: '#ef4444',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '6px',
-                        padding: '0.5rem 1rem',
-                        fontSize: '0.8rem',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Excluir
-                    </button>
                   </div>
                   
+
                   <p style={{
                     color: '#374151',
                     lineHeight: '1.6',
@@ -211,22 +279,7 @@ function RequestList() {
                     {request.mensagem}
                   </p>
                   
-                  {request.anexo && (
-                    <div style={{ marginBottom: '1rem' }}>
-                      <a
-                        href={request.anexo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          color: '#3b82f6',
-                          textDecoration: 'none',
-                          fontSize: '0.9rem'
-                        }}
-                      >
-                        📎 Ver anexo
-                      </a>
-                    </div>
-                  )}
+
                   
                   <div style={{
                     fontSize: '0.8rem',

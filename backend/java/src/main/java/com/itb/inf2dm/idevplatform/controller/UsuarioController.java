@@ -6,9 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/usuario")
@@ -79,7 +85,7 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> listarUsuarioPorId(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(usuarioService.findById(Long.parseLong(id)));
+            return ResponseEntity.ok(usuarioService.findByIdIncludeInactive(Long.parseLong(id)));
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body(
                 Map.of(
@@ -147,6 +153,71 @@ public class UsuarioController {
                     "error", "Not Found",
                     "message", "Usuário não encontrado com o id: " + id
                 )
+            );
+        }
+    }
+
+    @PatchMapping("/{id}/reativar")
+    public ResponseEntity<Object> reativarUsuario(@PathVariable String id) {
+        try {
+            usuarioService.reativar(Long.parseLong(id));
+            return ResponseEntity.ok().body(
+                Map.of(
+                    "status", 200,
+                    "message", "Usuário reativado com sucesso!"
+                )
+            );
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(
+                Map.of(
+                    "status", 400,
+                    "error", "Bad Request",
+                    "message", "O id informado não é válido: " + id
+                )
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(
+                Map.of(
+                    "status", 404,
+                    "error", "Not Found",
+                    "message", "Usuário não encontrado com o id: " + id
+                )
+            );
+        }
+    }
+
+    @PostMapping("/{id}/upload-foto")
+    public ResponseEntity<Object> uploadFoto(@PathVariable String id, @RequestParam("foto") MultipartFile file) {
+        try {
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body(
+                    Map.of("status", 400, "error", "Bad Request", "message", "Arquivo não enviado")
+                );
+            }
+
+            String uploadDir = "uploads/fotos/";
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath);
+
+            String fotoUrl = "/uploads/fotos/" + fileName;
+            Usuario usuario = usuarioService.findByIdIncludeInactive(Long.parseLong(id));
+            usuario.setFotoPerfil(fotoUrl);
+            usuarioService.save(usuario);
+
+            return ResponseEntity.ok(Map.of("fotoUrl", fotoUrl));
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(
+                Map.of("status", 500, "error", "Internal Server Error", "message", "Erro ao salvar arquivo")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(
+                Map.of("status", 404, "error", "Not Found", "message", "Usuário não encontrado")
             );
         }
     }

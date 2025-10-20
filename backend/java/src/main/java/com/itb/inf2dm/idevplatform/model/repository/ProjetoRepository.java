@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ProjetoRepository extends JpaRepository<Projeto, Long> {
     
-    @Query("SELECT p FROM Projeto p WHERE p.status = 'ABERTO' AND p.codStatus = true ORDER BY p.id DESC")
+    @Query("SELECT p FROM Projeto p WHERE p.status = 'ABERTO' AND p.profissionalId IS NULL AND p.codStatus = true ORDER BY p.id DESC")
     List<Projeto> findProjetosAbertos();
     
     @Query("SELECT p FROM Projeto p WHERE p.empresaId = ?1 AND p.codStatus = true ORDER BY p.id DESC")

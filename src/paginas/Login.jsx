@@ -10,22 +10,79 @@ function Login({ mostrar, fechar }) {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  function fazerLogin(e) {
+  async function fazerLogin(e) {
     e.preventDefault()
-    alert('Login feito com: ' + email)
-    fechar()
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/usuario/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, senha })
+      })
+      
+      if (response.ok) {
+        const usuario = await response.json()
+        
+        // Verifica se o usuário está ativo
+        if (!usuario.codStatus) {
+          alert('Usuário inativo. Entre em contato com o administrador.')
+          return
+        }
+        
+
+        
+        login(usuario, usuario.tipo)
+        fechar()
+        
+        // Redireciona baseado no tipo de usuário
+        if (usuario.tipo === 'profissional') {
+          navigate('/dashboard-profissional')
+        } else if (usuario.tipo === 'empresa') {
+          navigate('/dashboard')
+        } else {
+          navigate('/dashboard')
+        }
+      } else {
+        alert('Email ou senha incorretos!')
+      }
+    } catch (error) {
+      alert('Erro ao fazer login: ' + error.message)
+    }
   }
 
-  function entrarModoDesenvolvedor() {
-    login({ nome: 'Dev User', email: 'dev@test.com' }, 'cliente')
-    fechar()
-    navigate('/dashboard')
-  }
 
-  function fazerCadastro(e) {
+
+  async function fazerCadastro(e) {
     e.preventDefault()
-    alert('Cadastro feito para: ' + nome)
-    setEhCadastro(false)
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/usuario/cadastro', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          nome, 
+          email, 
+          senha, 
+          tipo: 'profissional' // Padrão
+        })
+      })
+      
+      if (response.ok) {
+        alert('Cadastro realizado com sucesso!')
+        setEhCadastro(false)
+        // Limpar campos
+        setNome('')
+        setEmail('')
+        setSenha('')
+      } else {
+        const error = await response.json()
+        alert(error.message || 'Erro ao cadastrar!')
+      }
+    } catch (error) {
+      alert('Erro ao cadastrar: ' + error.message)
+    }
   }
 
   if (!mostrar) return null
@@ -191,11 +248,7 @@ function Login({ mostrar, fechar }) {
             >
               Entrar
             </button>
-            <p style={{ textAlign: 'center', marginTop: '15px' }}>
-              <a href="#" style={{ color: '#007bff', textDecoration: 'none' }}>
-                Esqueceu a senha?
-              </a>
-            </p>
+
             <p style={{ textAlign: 'center', marginTop: '10px' }}>
               <a 
                 href="#" 
@@ -205,30 +258,7 @@ function Login({ mostrar, fechar }) {
                 Não tem uma conta? Clique aqui
               </a>
             </p>
-            
-            <div style={{ 
-              borderTop: '1px solid #eee', 
-              marginTop: '20px', 
-              paddingTop: '15px' 
-            }}>
-              <button 
-                type="button"
-                onClick={entrarModoDesenvolvedor}
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  backgroundColor: '#6c757d', 
-                  color: 'white', 
-                  border: 'none', 
-                  borderRadius: '5px', 
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  opacity: '0.8'
-                }}
-              >
-                🚀 Modo Dev
-              </button>
-            </div>
+
           </form>
         )}
       </div>

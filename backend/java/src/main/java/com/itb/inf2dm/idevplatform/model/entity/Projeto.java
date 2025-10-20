@@ -32,8 +32,7 @@ public class Projeto {
     @Column(length = 20)
     private String status = "ABERTO";
     
-    @Column(name = "IMAGEM_URL", length = 255)
-    private String imagemUrl;
+
     
     @Column(name = "COD_STATUS")
     private boolean codStatus = true;
@@ -63,8 +62,7 @@ public class Projeto {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     
-    public String getImagemUrl() { return imagemUrl; }
-    public void setImagemUrl(String imagemUrl) { this.imagemUrl = imagemUrl; }
+
     
     public boolean isCodStatus() { return codStatus; }
     public void setCodStatus(boolean codStatus) { this.codStatus = codStatus; }

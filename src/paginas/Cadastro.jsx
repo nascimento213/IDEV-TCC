@@ -9,7 +9,8 @@ function Cadastro() {
     email: '',
     senha: '',
     confirmarSenha: '',
-    telefone: ''
+    telefone: '',
+    tipo: ''
   })
   const navigate = useNavigate()
 
@@ -35,7 +36,7 @@ function Cadastro() {
           nome: formData.nome,
           email: formData.email,
           senha: formData.senha,
-          tipo: 'profissional',
+          tipo: formData.tipo,
           telefone: formData.telefone
         })
       })
@@ -241,6 +242,46 @@ function Cadastro() {
                 }}
                 placeholder="••••••••"
               />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Tipo de Conta *
+              </label>
+              <select
+                name="tipo"
+                value={formData.tipo}
+                onChange={handleChange}
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  transition: 'all 0.2s ease'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#3b82f6'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db'
+                  e.target.style.boxShadow = 'none'
+                }}
+              >
+                <option value="" disabled>Selecione o tipo de conta</option>
+                <option value="profissional">Profissional</option>
+                <option value="empresa">Empresa</option>
+              </select>
             </div>
 
             <div>

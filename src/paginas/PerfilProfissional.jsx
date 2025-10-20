@@ -1,18 +1,36 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import HeaderProfissional from '../componentes/HeaderProfissional'
 import PageTransition from '../componentes/PageTransition'
 
 function PerfilProfissional() {
   const navigate = useNavigate()
+  const { user, updateUser } = useAuth()
   const [formData, setFormData] = useState({
-    nome: 'Samuel Nascimento',
-    email: 'samuel@email.com',
-    github: 'https://github.com/samuel',
-    linguagens: ['React', 'Node.js', 'JavaScript', 'TypeScript', 'MongoDB'],
-    experiencia: 'Desenvolvedor Full Stack com 3 anos de experiência em projetos web modernos. Especializado em React, Node.js e arquiteturas escaláveis.',
-    projetos: 'Desenvolvimento de plataformas e-commerce, aplicativos mobile e sistemas de gestão. Experiência com metodologias ágeis e trabalho em equipe.'
+    nome: '',
+    email: '',
+    telefone: '',
+    github: '',
+    linguagens: [],
+    experiencia: '',
+    projetos: ''
   })
+  
+  // Carregar dados do usuário logado
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        nome: user.nome || '',
+        email: user.email || '',
+        telefone: user.telefone || '',
+        github: user.githubUrl || '',
+        linguagens: user.linguagens || [],
+        experiencia: user.bio || '',
+        projetos: user.projetos || ''
+      })
+    }
+  }, [user])
   const [novaLinguagem, setNovaLinguagem] = useState('')
 
   const linguagensDisponiveis = [
@@ -44,12 +62,31 @@ function PerfilProfissional() {
     })
   }
 
-  const handleSalvarPerfil = (e) => {
+  const handleSalvarPerfil = async (e) => {
     e.preventDefault()
-    // Aqui será feita a atualização no banco de dados
-    console.log('Atualizando perfil no banco de dados:', formData)
-    // TODO: Implementar chamada para API de atualização
-    alert('Perfil salvo com sucesso!')
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/usuario/${user.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: formData.nome,
+          email: formData.email,
+          telefone: formData.telefone,
+          bio: formData.experiencia,
+          githubUrl: formData.github,
+          tipo: user.tipo
+        })
+      })
+      
+      if (response.ok) {
+        alert('Perfil salvo com sucesso!')
+      } else {
+        alert('Erro ao salvar perfil')
+      }
+    } catch (error) {
+      console.error('Erro ao salvar perfil:', error)
+      alert('Erro ao salvar perfil')
+    }
   }
 
   const handleVoltar = () => {
@@ -173,6 +210,82 @@ function PerfilProfissional() {
                 </div>
               </div>
 
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '0.5rem'
+                  }}>
+                    Telefone
+                  </label>
+                  <input
+                    type="tel"
+                    name="telefone"
+                    value={formData.telefone}
+                    onChange={handleChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#3b82f6'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#d1d5db'
+                      e.target.style.boxShadow = 'none'
+                    }}
+                    placeholder="(11) 99999-9999"
+                  />
+                </div>
+
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '0.5rem'
+                  }}>
+                    GitHub URL
+                  </label>
+                  <input
+                    type="url"
+                    name="github"
+                    value={formData.github}
+                    onChange={handleChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#3b82f6'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#d1d5db'
+                      e.target.style.boxShadow = 'none'
+                    }}
+                    placeholder="https://github.com/seuusuario"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label style={{
                   display: 'block',
@@ -181,13 +294,35 @@ function PerfilProfissional() {
                   color: '#374151',
                   marginBottom: '0.5rem'
                 }}>
-                  GitHub
+                  Foto de Perfil
                 </label>
                 <input
-                  type="url"
-                  name="github"
-                  value={formData.github}
-                  onChange={handleChange}
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files[0]
+                    if (file) {
+                      const formDataUpload = new FormData()
+                      formDataUpload.append('foto', file)
+                      
+                      try {
+                        const response = await fetch(`http://localhost:8080/api/v1/usuario/${user.id}/upload-foto`, {
+                          method: 'POST',
+                          body: formDataUpload
+                        })
+                        
+                        if (response.ok) {
+                          const result = await response.json()
+                          updateUser({ fotoPerfil: result.fotoUrl })
+                          alert('Foto atualizada com sucesso!')
+                        } else {
+                          alert('Erro ao fazer upload da foto')
+                        }
+                      } catch (error) {
+                        alert('Erro ao fazer upload da foto')
+                      }
+                    }
+                  }}
                   style={{
                     width: '100%',
                     padding: '0.75rem 1rem',
@@ -195,20 +330,12 @@ function PerfilProfissional() {
                     borderRadius: '8px',
                     fontSize: '1rem',
                     outline: 'none',
-                    boxSizing: 'border-box',
-                    transition: 'all 0.2s ease'
+                    boxSizing: 'border-box'
                   }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#3b82f6'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#d1d5db'
-                    e.target.style.boxShadow = 'none'
-                  }}
-                  placeholder="https://github.com/seuusuario"
                 />
               </div>
+
+
 
               <div>
                 <label style={{
@@ -397,9 +524,9 @@ function PerfilProfissional() {
                   onClick={handleVoltar}
                   style={{
                     padding: '0.875rem 2rem',
-                    backgroundColor: '#f3f4f6',
+                    backgroundColor: 'white',
                     color: '#374151',
-                    border: 'none',
+                    border: '1px solid #d1d5db',
                     borderRadius: '8px',
                     fontSize: '1rem',
                     fontWeight: '600',
@@ -407,10 +534,10 @@ function PerfilProfissional() {
                     transition: 'all 0.2s ease'
                   }}
                   onMouseOver={(e) => {
-                    e.target.style.backgroundColor = '#e5e7eb'
+                    e.target.style.backgroundColor = '#f9fafb'
                   }}
                   onMouseOut={(e) => {
-                    e.target.style.backgroundColor = '#f3f4f6'
+                    e.target.style.backgroundColor = 'white'
                   }}
                 >
                   Voltar

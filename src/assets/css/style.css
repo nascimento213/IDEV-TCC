@@ -227,13 +227,19 @@ nav {
 
 .hero-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 2rem;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
     padding: 0 2rem;
+    text-align: center;
+}
+
+.hero-title {
+    text-align: center;
+    width: 100%;
 }
 
 .hero-title h1 {
@@ -241,12 +247,14 @@ nav {
     font-weight: 700;
     margin: 0 0 0.5rem 0;
     color: #1f2937;
+    text-align: center;
 }
 
 .hero-title p {
     font-size: 1.2rem;
     margin: 0;
     color: #6b7280;
+    text-align: center;
 }
 
 .mode-switcher {

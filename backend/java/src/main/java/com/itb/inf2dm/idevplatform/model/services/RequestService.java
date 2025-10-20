@@ -22,6 +22,14 @@ public class RequestService {
     public List<Request> findByUsuarioId(Long usuarioId) {
         return requestRepository.findByUsuarioId(usuarioId);
     }
+    
+    public List<Request> findByRemetenteId(Long remetenteId) {
+        return requestRepository.findByRemetenteId(remetenteId);
+    }
+    
+    public List<Request> findByDestinatarioId(Long destinatarioId) {
+        return requestRepository.findByDestinatarioId(destinatarioId);
+    }
 
     public List<Request> findAll() {
         return requestRepository.findAll();

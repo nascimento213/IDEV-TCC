@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext()
 
@@ -11,11 +11,30 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user')
+    return savedUser ? JSON.parse(savedUser) : null
+  })
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem('isLoggedIn') === 'true'
+  })
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('isLoggedIn', 'true')
+    } else {
+      localStorage.removeItem('user')
+      localStorage.removeItem('isLoggedIn')
+    }
+  }, [user])
 
   const login = (userData, userType) => {
-    setUser({ ...userData, type: userType })
+    console.log('AuthContext login - userData:', userData)
+    console.log('AuthContext login - userType:', userType)
+    const userWithType = { ...userData, type: userType, tipo: userData.tipo }
+    console.log('AuthContext login - userWithType:', userWithType)
+    setUser(userWithType)
     setIsLoggedIn(true)
   }
 
@@ -29,6 +48,10 @@ export const AuthProvider = ({ children }) => {
       setUser({ ...user, type: newType })
     }
   }
+  
+  const updateUser = (newUserData) => {
+    setUser({ ...user, ...newUserData })
+  }
 
   return (
     <AuthContext.Provider value={{
@@ -36,7 +59,8 @@ export const AuthProvider = ({ children }) => {
       isLoggedIn,
       login,
       logout,
-      switchUserType
+      switchUserType,
+      updateUser
     }}>
       {children}
     </AuthContext.Provider>

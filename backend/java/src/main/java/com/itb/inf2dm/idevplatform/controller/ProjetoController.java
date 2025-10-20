@@ -90,6 +90,18 @@ public class ProjetoController {
         }
     }
 
+
+
+    @PutMapping("/{id}/remover-profissional")
+    public ResponseEntity<Projeto> removerProfissional(@PathVariable String id) {
+        try {
+            Projeto projeto = projetoService.removerProfissional(Long.parseLong(id));
+            return ResponseEntity.ok(projeto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletarProjetoPorId(@PathVariable String id) {
         try {

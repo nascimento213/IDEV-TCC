@@ -1,39 +1,20 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import Header from '../componentes/Header'
-import HeaderProfissional from '../componentes/HeaderProfissional'
 import PageTransition from '../componentes/PageTransition'
 
-
-function RequestForm() {
+function ContatoForm() {
   const navigate = useNavigate()
   const { user } = useAuth()
+  const [searchParams] = useSearchParams()
+  const destinatarioId = searchParams.get('destinatario')
+  
   const [formData, setFormData] = useState({
-    projetoId: '',
-    categoria: '',
     mensagem: '',
     anexo: ''
   })
-  const [projetos, setProjetos] = useState([])
   const [enviando, setEnviando] = useState(false)
-  
-  useEffect(() => {
-    const carregarProjetos = async () => {
-      try {
-        const endpoint = user?.tipo === 'profissional' ? 
-          `profissional/${user.id}` : `empresa/${user.id}`
-        const response = await fetch(`http://localhost:8080/api/v1/projeto/${endpoint}`)
-        if (response.ok) {
-          const data = await response.json()
-          setProjetos(data.filter(p => p.status === 'FINALIZADO'))
-        }
-      } catch (error) {
-        console.error('Erro ao carregar projetos:', error)
-      }
-    }
-    if (user) carregarProjetos()
-  }, [user])
 
   const handleChange = (e) => {
     setFormData({
@@ -47,36 +28,42 @@ function RequestForm() {
     setEnviando(true)
     
     try {
-      if (!formData.projetoId) {
-        alert('Selecione um projeto finalizado')
-        return
-      }
+      console.log('Enviando mensagem para:', destinatarioId)
       
-      const projeto = projetos.find(p => p.id == formData.projetoId)
-      const destinatarioId = user.tipo === 'profissional' ? projeto.empresaId : projeto.profissionalId
-      
-      const request = {
+      const mensagemData = {
         remetenteId: user.id,
-        destinatarioId: destinatarioId,
-        projetoId: parseInt(formData.projetoId),
-        categoria: formData.categoria,
-        mensagem: formData.mensagem,
-        anexo: formData.anexo || null
+        destinatarioId: parseInt(destinatarioId),
+        assunto: 'Contato direto',
+        mensagem: formData.mensagem
       }
       
-      const response = await fetch('http://localhost:8080/api/v1/request', {
+      if (formData.anexo && formData.anexo.trim()) {
+        mensagemData.anexo = formData.anexo.trim()
+      }
+      
+      const response = await fetch('http://localhost:8080/api/v1/mensagem', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request)
+        body: JSON.stringify(mensagemData)
       })
       
-      if (!response.ok) throw new Error('Erro ao enviar request')
-      alert('Request enviado com sucesso!')
-      setFormData({ projetoId: '', categoria: '', mensagem: '', anexo: '' })
-      navigate('/requests')
+      console.log('Response status:', response.status)
+      
+      if (response.ok) {
+        const result = await response.text()
+        console.log('Response body:', result)
+      } else {
+        const errorText = await response.text()
+        console.log('Error response:', errorText)
+        throw new Error(`HTTP ${response.status}: ${errorText}`)
+      }
+      
+      if (!response.ok) throw new Error('Erro ao enviar mensagem')
+      alert('Mensagem enviada com sucesso!')
+      navigate(-1)
     } catch (error) {
-      console.error('Erro ao enviar request:', error)
-      alert('Erro ao enviar request')
+      console.error('Erro ao enviar mensagem:', error)
+      alert('Erro ao enviar mensagem')
     } finally {
       setEnviando(false)
     }
@@ -84,11 +71,7 @@ function RequestForm() {
 
   return (
     <PageTransition>
-      {user?.tipo === 'profissional' ? (
-        <HeaderProfissional secaoAtiva="" setSecaoAtiva={() => {}} aoClicarLogin={() => navigate('/')} />
-      ) : (
-        <Header secaoAtiva="" setSecaoAtiva={() => {}} aoClicarLogin={() => navigate('/')} />
-      )}
+      <Header secaoAtiva="" setSecaoAtiva={() => {}} aoClicarLogin={() => navigate('/')} />
       
       <main style={{
         minHeight: 'calc(100vh - 70px)',
@@ -102,7 +85,7 @@ function RequestForm() {
           background: '#ffffff',
           borderRadius: '16px',
           width: '100%',
-          maxWidth: '600px',
+          maxWidth: '500px',
           padding: '2.5rem',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)'
         }}>
@@ -113,83 +96,18 @@ function RequestForm() {
               color: '#111827',
               margin: '0 0 0.5rem 0'
             }}>
-              Enviar Request
+              Enviar Mensagem
             </h1>
             <p style={{
               color: '#6b7280',
               fontSize: '1rem',
               margin: 0
             }}>
-              Envie feedback sobre projetos finalizados
+              Entre em contato com este profissional
             </p>
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-
-            
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                color: '#374151',
-                marginBottom: '0.5rem'
-              }}>
-                Projeto Finalizado *
-              </label>
-              <select
-                name="projetoId"
-                value={formData.projetoId}
-                onChange={handleChange}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  outline: 'none',
-                  boxSizing: 'border-box'
-                }}
-              >
-                <option value="" disabled>Selecione um projeto finalizado</option>
-                {projetos.map(projeto => (
-                  <option key={projeto.id} value={projeto.id}>{projeto.titulo}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                color: '#374151',
-                marginBottom: '0.5rem'
-              }}>
-                Categoria *
-              </label>
-              <select
-                name="categoria"
-                value={formData.categoria}
-                onChange={handleChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  outline: 'none',
-                  boxSizing: 'border-box'
-                }}
-              >
-                <option value="" disabled>Selecione uma categoria</option>
-                <option value="reclamacao">Reclamação</option>
-                <option value="sugestao">Sugestão</option>
-                <option value="elogio">Elogio</option>
-              </select>
-            </div>
-
             <div>
               <label style={{
                 display: 'block',
@@ -205,7 +123,7 @@ function RequestForm() {
                 value={formData.mensagem}
                 onChange={handleChange}
                 required
-                rows={5}
+                rows={6}
                 style={{
                   width: '100%',
                   padding: '0.75rem 1rem',
@@ -220,8 +138,6 @@ function RequestForm() {
               />
             </div>
 
-
-
             <div>
               <label style={{
                 display: 'block',
@@ -230,7 +146,7 @@ function RequestForm() {
                 color: '#374151',
                 marginBottom: '0.5rem'
               }}>
-                Anexo (URL)
+                Anexo (URL) - Opcional
               </label>
               <input
                 type="url"
@@ -246,7 +162,7 @@ function RequestForm() {
                   outline: 'none',
                   boxSizing: 'border-box'
                 }}
-                placeholder="https://exemplo.com/arquivo.png"
+                placeholder="https://exemplo.com/arquivo.png (opcional)"
               />
             </div>
 
@@ -258,7 +174,7 @@ function RequestForm() {
             }}>
               <button
                 type="button"
-                onClick={() => navigate('/requests')}
+                onClick={() => navigate(-1)}
                 style={{
                   padding: '0.875rem 2rem',
                   backgroundColor: '#f3f4f6',
@@ -270,7 +186,7 @@ function RequestForm() {
                   cursor: 'pointer'
                 }}
               >
-                Ver Meus Requests
+                Cancelar
               </button>
               <button
                 type="submit"
@@ -296,4 +212,4 @@ function RequestForm() {
   )
 }
 
-export default RequestForm
+export default ContatoForm

@@ -9,6 +9,9 @@ import PerfilProfissional from './paginas/PerfilProfissional'
 import DashboardProfissional from './paginas/DashboardProfissional'
 import RequestForm from './paginas/RequestForm'
 import RequestList from './paginas/RequestList'
+import ContatoForm from './paginas/ContatoForm'
+import CriarProjeto from './paginas/CriarProjeto'
+import CandidatosProjeto from './paginas/CandidatosProjeto'
 import Admin from './paginas/Admin'
 
 const App = () => {
@@ -22,7 +25,10 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard-profissional" element={<DashboardProfissional />} />
         <Route path="/request-form" element={<RequestForm />} />
+        <Route path="/contato-form" element={<ContatoForm />} />
         <Route path="/requests" element={<RequestList />} />
+        <Route path="/criar-projeto" element={<CriarProjeto />} />
+        <Route path="/projeto/:projetoId/candidatos" element={<CandidatosProjeto />} />
         <Route path="/about" element={<About />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>

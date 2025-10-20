@@ -9,7 +9,13 @@ import java.util.List;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
     
-    @Query("SELECT r FROM Request r WHERE r.usuarioId = ?1 AND r.codStatus = true ORDER BY r.dataEnvio DESC")
+    @Query("SELECT r FROM Request r WHERE r.remetenteId = ?1 AND r.codStatus = true ORDER BY r.dataEnvio DESC")
+    List<Request> findByRemetenteId(Long remetenteId);
+    
+    @Query("SELECT r FROM Request r WHERE r.destinatarioId = ?1 AND r.codStatus = true ORDER BY r.dataEnvio DESC")
+    List<Request> findByDestinatarioId(Long destinatarioId);
+    
+    @Query("SELECT r FROM Request r WHERE (r.remetenteId = ?1 OR r.destinatarioId = ?1) AND r.codStatus = true ORDER BY r.dataEnvio DESC")
     List<Request> findByUsuarioId(Long usuarioId);
     
     @Query("SELECT COUNT(r) FROM Request r WHERE r.codStatus = true")

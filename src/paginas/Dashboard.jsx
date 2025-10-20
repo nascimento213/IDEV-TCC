@@ -14,6 +14,25 @@ const Dashboard = () => {
   const [mostrarLogin, setMostrarLogin] = useState(false);
   const [filtroSelecionado, setFiltroSelecionado] = useState('');
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const { user, isLoggedIn, switchUserType } = useAuth();
+  const navigate = useNavigate();
+  
+  // Proteção de rota - apenas empresas podem acessar
+  useEffect(() => {
+    console.log('Dashboard - user:', user)
+    console.log('Dashboard - user.tipo:', user?.tipo)
+    console.log('Dashboard - user.type:', user?.type)
+    
+    const tipoUsuario = user?.tipo || user?.type
+    
+    if (isLoggedIn && user && tipoUsuario === 'profissional') {
+      alert('Não é possível acessar esta área! Este usuário não está cadastrado como empresa.')
+      navigate('/dashboard-profissional')
+    } else if (isLoggedIn && user && tipoUsuario === 'empresa') {
+      // Garantir que empresas vejam o conteúdo
+      setSecaoAtiva('inicio')
+    }
+  }, [isLoggedIn, user, navigate])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -30,8 +49,6 @@ const Dashboard = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, [mostrarFiltros]);
-  const navigate = useNavigate();
-  const { switchUserType } = useAuth();
 
   const habilidades = [
     'JavaScript', 'React', 'Node.js', 'Python', 'Java', 'PHP', 'C#', 'Angular', 
@@ -39,21 +56,13 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest('.menu-dropdown')) {
-        setShowMenu(false);
-      }
-    };
-    
     const handleDashboardSection = (event) => {
       setSecaoAtiva(event.detail);
     };
     
-    document.addEventListener('click', handleClickOutside);
     window.addEventListener('setDashboardSection', handleDashboardSection);
     
     return () => {
-      document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('setDashboardSection', handleDashboardSection);
     };
   }, []);
@@ -81,87 +90,77 @@ const Dashboard = () => {
     },
   ];
 
-  const professionals = [
-    {
-      id: 1,
-      name: 'João Silva',
-      title: 'Desenvolvedor Full Stack',
-      skills: ['React', 'Node.js', 'MongoDB'],
-      location: 'São Paulo, SP'
-    },
-    {
-      id: 2,
-      name: 'Carlos Mendes',
-      title: 'Engenheiro de DevOps',
-      skills: ['AWS', 'Docker', 'Kubernetes'],
-      location: 'Rio de Janeiro, RJ'
-    },
-    {
-      id: 3,
-      name: 'Mariana Costa',
-      title: 'Designer UI/UX',
-      skills: ['Figma', 'Adobe XD', 'User Research'],
-      location: 'Belo Horizonte, MG'
-    },
-    {
-      id: 4,
-      name: 'Pedro Rocha',
-      title: 'Engenheiro de Qualidade',
-      skills: ['Testes Automatizados', 'Selenium', 'Jest'],
-      location: 'Porto Alegre, RS'
+  const [professionals, setProfessionals] = useState([]);
+  
+  // Buscar profissionais da API
+  useEffect(() => {
+    const buscarProfissionais = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/usuario/profissionais')
+        if (response.ok) {
+          const data = await response.json()
+          setProfessionals(data.map(prof => ({
+            id: prof.id,
+            name: prof.nome,
+            title: prof.bio || 'Profissional de TI',
+            skills: ['React', 'Node.js'], // Temporário até ter campo skills
+            location: 'Brasil'
+          })))
+        }
+      } catch (error) {
+        console.error('Erro ao buscar profissionais:', error)
+      }
     }
-  ];
+    buscarProfissionais()
+  }, [])
 
-  const projects = [
-    {
-      id: 1,
-      title: 'EcoMarket - Marketplace Sustentável',
-      description: 'Plataforma de e-commerce focada em produtos ecológicos e sustentáveis com sistema de pontuação verde',
-      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=250&fit=crop',
-      skills: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      budget: 'R$ 25.000 - R$ 35.000'
-    },
-    {
-      id: 2,
-      title: 'FoodieConnect - App de Delivery',
-      description: 'Aplicativo mobile que conecta chefs locais com clientes, incluindo sistema de avaliação e chat em tempo real',
-      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=250&fit=crop',
-      skills: ['React Native', 'Firebase', 'Socket.io'],
-      budget: 'R$ 18.000 - R$ 22.000'
-    },
-    {
-      id: 3,
-      title: 'MindSpace - Plataforma de Bem-estar',
-      description: 'Sistema web para agendamento de terapias online com videochamadas integradas e acompanhamento de progresso',
-      image: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
-      skills: ['Vue.js', 'WebRTC', 'PostgreSQL', 'AWS'],
-      budget: 'R$ 30.000 - R$ 40.000'
-    },
-    {
-      id: 4,
-      title: 'SmartHome Dashboard',
-      description: 'Interface web para controle de dispositivos IoT residenciais com automação inteligente e análise de consumo',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop',
-      skills: ['Angular', 'Python', 'MQTT', 'InfluxDB'],
-      budget: 'R$ 20.000 - R$ 28.000'
-    },
-    {
-      id: 5,
-      title: 'EduTech - Plataforma de Ensino',
-      description: 'Sistema completo de gestão educacional com aulas ao vivo, gamificação e acompanhamento de desempenho',
-      image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=400&h=250&fit=crop',
-      skills: ['React', 'Django', 'Redis', 'Docker'],
-      budget: 'R$ 45.000 - R$ 60.000'
-    },
-    {
-      id: 6,
-      title: 'CryptoTracker Pro',
-      description: 'Dashboard avançado para análise de criptomoedas com gráficos em tempo real e alertas personalizados',
-      image: 'https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=400&h=250&fit=crop',
-      skills: ['Next.js', 'TypeScript', 'Chart.js', 'WebSocket'],
-      budget: 'R$ 15.000 - R$ 25.000'
+  const [projects, setProjects] = useState([])
+  
+  const removerProfissional = async (projetoId) => {
+    if (confirm('Tem certeza que deseja remover o profissional deste projeto?')) {
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/projeto/${projetoId}/remover-profissional`, {
+          method: 'PUT'
+        })
+        
+        if (response.ok) {
+          alert('Profissional removido com sucesso!')
+          window.location.reload()
+        } else {
+          alert('Erro ao remover profissional')
+        }
+      } catch (error) {
+        console.error('Erro ao remover profissional:', error)
+        alert('Erro ao remover profissional')
+      }
     }
-  ];
+  }
+  
+  // Buscar projetos da API
+  useEffect(() => {
+    const buscarProjetos = async () => {
+      if (!user?.id) return
+      
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/projeto/empresa/${user.id}`)
+        if (response.ok) {
+          const data = await response.json()
+          setProjects(data.map(proj => ({
+            id: proj.id,
+            title: proj.titulo,
+            description: proj.descricao,
+            image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=250&fit=crop',
+            skills: ['React', 'Node.js'],
+            budget: 'Orçamento a combinar',
+            profissionalId: proj.profissionalId
+          })))
+        }
+      } catch (error) {
+        console.error('Erro ao buscar projetos:', error)
+      }
+    }
+    buscarProjetos()
+  }, [user?.id])
 
   return (
     <PageTransition>
@@ -178,14 +177,23 @@ const Dashboard = () => {
           <Carousel profissionais={professionals} />
         )}
 
-        {secaoAtiva === 'inicio' && (
+        {(secaoAtiva === 'inicio' || !secaoAtiva) && (
           <>
             <section className="hero empresa">
               <div className="container">
-                <div className="hero-header">
-                  <div className="hero-title">
-                    <h1>Bem-vindo ao IDev</h1>
-                    <p>Conecte-se com os melhores profissionais de TI</p>
+                <div className="hero-header" style={{ textAlign: 'center' }}>
+                  <div className="hero-title" style={{ textAlign: 'center' }}>
+                    {isLoggedIn && user ? (
+                      <>
+                        <h1>Bem-vindo, {user.nome}!</h1>
+                        <p>Encontre os melhores profissionais para seus projetos</p>
+                      </>
+                    ) : (
+                      <>
+                        <h1>Bem-vindo ao IDev</h1>
+                        <p>Conecte-se com os melhores profissionais de TI</p>
+                      </>
+                    )}
                   </div>
                 </div>
                 
@@ -265,7 +273,26 @@ const Dashboard = () => {
         {secaoAtiva === 'projetos' && (
           <section className="projects-section">
             <div className="container">
-              <h2>Projetos em Destaque</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '80px' }}>
+                <h2 style={{ margin: 0 }}>Projetos em Destaque</h2>
+                {isLoggedIn && user?.tipo === 'empresa' && (
+                  <button
+                    onClick={() => navigate('/criar-projeto')}
+                    style={{
+                      padding: '0.875rem 2rem',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    + Criar Projeto
+                  </button>
+                )}
+              </div>
               <div className="projects-grid">
                 {projects.map(project => (
                   <div key={project.id} className="project-card">
@@ -282,7 +309,12 @@ const Dashboard = () => {
                       </div>
                       <div className="project-footer">
                         <span className="project-budget">{project.budget}</span>
-                        <button className="btn-details">Ver Detalhes</button>
+                        <button 
+                          className="btn-details"
+                          onClick={() => navigate(`/projeto/${project.id}/candidatos`)}
+                        >
+                          Ver Candidatos
+                        </button>
                       </div>
                     </div>
                   </div>

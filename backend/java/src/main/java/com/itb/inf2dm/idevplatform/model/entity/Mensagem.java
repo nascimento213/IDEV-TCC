@@ -4,38 +4,43 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "REQUEST")
-public class Request {
-
+@Table(name = "MENSAGEM")
+public class Mensagem {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "REMETENTE_ID", nullable = false)
+    @Column(name = "remetente_id", nullable = false)
     private Long remetenteId;
     
-    @Column(name = "DESTINATARIO_ID", nullable = false)
+    @Column(name = "destinatario_id", nullable = false)
     private Long destinatarioId;
     
-    @Column(name = "PROJETO_ID", nullable = false)
-    private Long projetoId;
+    @Column(name = "assunto")
+    private String assunto;
     
-    @Column(length = 20, nullable = false)
-    private String categoria;
-    
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name = "mensagem", nullable = false, columnDefinition = "TEXT")
     private String mensagem;
     
-    @Column(length = 500)
+    @Column(name = "anexo")
     private String anexo;
     
-    @Column(name = "DATA_ENVIO", nullable = false)
-    private LocalDateTime dataEnvio = LocalDateTime.now();
+    @Column(name = "data_envio")
+    private LocalDateTime dataEnvio;
     
-    @Column(name = "COD_STATUS")
-    private boolean codStatus = true;
-
-    // Getters e Setters
+    @Column(name = "lida")
+    private Boolean lida = false;
+    
+    @Column(name = "cod_status")
+    private Boolean codStatus = true;
+    
+    // Constructors
+    public Mensagem() {
+        this.dataEnvio = LocalDateTime.now();
+    }
+    
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -45,11 +50,8 @@ public class Request {
     public Long getDestinatarioId() { return destinatarioId; }
     public void setDestinatarioId(Long destinatarioId) { this.destinatarioId = destinatarioId; }
     
-    public Long getProjetoId() { return projetoId; }
-    public void setProjetoId(Long projetoId) { this.projetoId = projetoId; }
-    
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public String getAssunto() { return assunto; }
+    public void setAssunto(String assunto) { this.assunto = assunto; }
     
     public String getMensagem() { return mensagem; }
     public void setMensagem(String mensagem) { this.mensagem = mensagem; }
@@ -60,6 +62,9 @@ public class Request {
     public LocalDateTime getDataEnvio() { return dataEnvio; }
     public void setDataEnvio(LocalDateTime dataEnvio) { this.dataEnvio = dataEnvio; }
     
-    public boolean isCodStatus() { return codStatus; }
-    public void setCodStatus(boolean codStatus) { this.codStatus = codStatus; }
+    public Boolean getLida() { return lida; }
+    public void setLida(Boolean lida) { this.lida = lida; }
+    
+    public Boolean getCodStatus() { return codStatus; }
+    public void setCodStatus(Boolean codStatus) { this.codStatus = codStatus; }
 }

@@ -20,25 +20,46 @@ function ModernLogin({ mostrar, fechar }) {
     setTimeout(() => fechar(), 200)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const selectedUserType = localStorage.getItem('selectedUserType') || 'cliente'
-    const userData = {
-      id: 1,
-      name: 'Samuel Nascimento',
-      email: email,
-      avatar: '/src/assets/imagens/gato-de-terno-suit-cat.png'
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/usuario/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, senha })
+      })
+      
+      if (response.ok) {
+        const usuario = await response.json()
+        
+        if (!usuario.codStatus) {
+          alert('Usuário inativo. Entre em contato com o administrador.')
+          return
+        }
+        
+
+        
+        console.log('Usuário logado:', usuario)
+        console.log('Tipo do usuário:', usuario.tipo)
+        
+        login(usuario, usuario.tipo)
+        handleClose()
+        
+        if (usuario.tipo === 'profissional') {
+          navigate('/dashboard-profissional')
+        } else if (usuario.tipo === 'empresa') {
+          navigate('/dashboard')
+        } else {
+          navigate('/dashboard')
+        }
+      } else {
+        alert('Email ou senha incorretos!')
+      }
+    } catch (error) {
+      alert('Erro ao fazer login: ' + error.message)
     }
-    login(userData, selectedUserType)
-    localStorage.removeItem('selectedUserType')
-    
-    if (selectedUserType === 'profissional') {
-      navigate('/dashboard-profissional')
-    } else {
-      navigate('/dashboard')
-    }
-    
-    handleClose()
   }
 
   if (!mostrar && !isAnimating) return null
@@ -60,7 +81,11 @@ function ModernLogin({ mostrar, fechar }) {
         transition: 'opacity 0.2s ease',
         padding: '1rem'
       }}
-      onClick={handleClose}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) {
+          handleClose()
+        }
+      }}
     >
       <div
         style={{
@@ -222,23 +247,7 @@ function ModernLogin({ mostrar, fechar }) {
           </button>
         </form>
 
-        {/* Footer Links */}
-        <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-          <a
-            href="#"
-            style={{
-              color: '#3b82f6',
-              fontSize: '0.875rem',
-              textDecoration: 'none',
-              fontWeight: '500',
-              transition: 'color 0.2s ease'
-            }}
-            onMouseOver={(e) => e.target.style.color = '#2563eb'}
-            onMouseOut={(e) => e.target.style.color = '#3b82f6'}
-          >
-            Esqueci minha senha
-          </a>
-        </div>
+
 
         <div style={{ 
           marginTop: '1rem', 
